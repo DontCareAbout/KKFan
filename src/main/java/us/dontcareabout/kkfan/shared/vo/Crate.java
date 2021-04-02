@@ -75,6 +75,7 @@ public class Crate {
 		this.number = number;
 	}
 
+	/** @return 箱子的高，單位 cm */
 	public double getHeight() {
 		return height;
 	}
@@ -83,6 +84,7 @@ public class Crate {
 		this.height = height;
 	}
 
+	/** @return 箱子的長，單位 cm */
 	public double getLength() {
 		return length;
 	}
@@ -91,6 +93,7 @@ public class Crate {
 		this.length = length;
 	}
 
+	/** @return 箱子的寬，單位 cm */
 	public double getWidth() {
 		return width;
 	}
@@ -99,6 +102,7 @@ public class Crate {
 		this.width = width;
 	}
 
+	/** @return 不含「#」的六位 hex 色碼 */
 	public String getColor() {
 		return color;
 	}
@@ -133,6 +137,7 @@ public class Crate {
 		this.location = location;
 	}
 
+	/** @return 內容物 */
 	public String getItem() {
 		return item;
 	}
