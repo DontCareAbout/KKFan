@@ -17,7 +17,7 @@ public class ColorUtil {
 	public static final RGB grey700 = new RGB("#616161");
 	public static final RGB blueGrey900 = new RGB("#263238");
 
-	public static Color get(LocationType locationType) {
+	public static RGB get(LocationType locationType) {
 		switch(locationType) {
 		case gallery: return blue900;
 		case somewhere: return red900;
