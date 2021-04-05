@@ -1,6 +1,7 @@
 package us.dontcareabout.kkfan.client.component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.sencha.gxt.chart.client.draw.RGB;
@@ -12,10 +13,11 @@ import us.dontcareabout.gxt.client.draw.LayerSprite;
 import us.dontcareabout.gxt.client.draw.component.TextButton;
 import us.dontcareabout.kkfan.client.layer.LocationLayer;
 import us.dontcareabout.kkfan.client.util.StringUtil;
+import us.dontcareabout.kkfan.shared.vo.Crate;
 import us.dontcareabout.kkfan.shared.vo.Location;
 
 public class FloorPlan extends LayerContainer {
-	private double ratio = 0.04;
+	private double ratio = 0.25;
 
 	private List<LocationLayer> locLayerList = new ArrayList<>();
 	private LayerSprite bg = new LayerSprite();
@@ -47,6 +49,30 @@ public class FloorPlan extends LayerContainer {
 		}
 
 		adjustMember(getOffsetWidth(), getOffsetHeight());
+	}
+
+	public void refresh(List<Crate> crates) {
+		HashMap<LocationLayer, List<Crate>> map = new HashMap<>();
+
+		for (Crate crate : crates) {
+			for (LocationLayer locLayer : locLayerList) {
+				if (!crate.getLocation().equals(locLayer.location)) { continue; }
+
+				List<Crate> list = map.get(locLayer);
+
+				if (list == null) {
+					list = new ArrayList<>();
+					map.put(locLayer, list);
+				}
+
+				list.add(crate);
+				break;
+			}
+		}
+
+		for (LocationLayer locLayer : map.keySet()) {
+			locLayer.takeOver(map.get(locLayer));
+		}
 	}
 
 	@Override

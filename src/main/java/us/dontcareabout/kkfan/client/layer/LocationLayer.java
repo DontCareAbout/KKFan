@@ -1,5 +1,9 @@
 package us.dontcareabout.kkfan.client.layer;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.sencha.gxt.chart.client.draw.RGB;
 
 import us.dontcareabout.gxt.client.draw.LRectangleSprite;
@@ -8,6 +12,7 @@ import us.dontcareabout.kkfan.client.component.FloorPlan;
 import us.dontcareabout.kkfan.client.util.ColorUtil;
 import us.dontcareabout.kkfan.shared.grpah.Polygon;
 import us.dontcareabout.kkfan.shared.grpah.XY;
+import us.dontcareabout.kkfan.shared.vo.Crate;
 import us.dontcareabout.kkfan.shared.vo.Location;
 
 /**
@@ -28,6 +33,7 @@ public class LocationLayer extends LayerSprite {
 	private double ratio;
 
 	private LRectangleSprite bg = new LRectangleSprite();
+	private List<CrateBlock> cbList = new ArrayList<>();
 
 	public LocationLayer(Location location) {
 		this.location = location;
@@ -43,13 +49,93 @@ public class LocationLayer extends LayerSprite {
 		add(bg);
 	}
 
+	public void takeOver(Crate crate) {
+		make(crate);
+		redeploy();
+		lineUp();
+	}
+
+	public void takeOver(List<Crate> crates) {
+		for (Crate crate :crates) {
+			make(crate);
+		}
+		redeploy();
+		lineUp();
+	}
+
 	@Override
 	protected void adjustMember() {
-		ratio = getWidth() / Math.abs(left.x - bottom.x);
+		double newRatio = getWidth() / Math.abs(left.x - bottom.x);
+		double ratioChange = newRatio / ratio;
 
+		for (CrateBlock cb : cbList) {
+			cb.setLX(cb.getLX() * ratioChange);
+			cb.setLY(cb.getLY() * ratioChange);
+			cb.setWidth(cb.getWidth() * ratioChange);
+			cb.setHeight(cb.getHeight() * ratioChange);
+		}
+
+		ratio = newRatio;
 		bg.setLX(0);
 		bg.setLY(0);
 		bg.setWidth(getWidth());
 		bg.setHeight(getHeight());
+	}
+
+	/** 注意：沒有處理位置的邏輯，那歸 {@link #lineUp()} 處理 */
+	private CrateBlock make(Crate crate) {
+		CrateBlock result = new CrateBlock(crate);
+		cbList.add(result);
+		add(result);
+
+		result.setWidth(crate.getLength() * ratio);
+		result.setHeight(crate.getWidth() * ratio);
+		return result;
+	}
+
+	//目前是用由大到小依序排下去，撞到邊界就換行的方式排列
+	private void lineUp() {
+		if (cbList.isEmpty()) { return; }
+
+		Collections.sort(cbList);
+
+		final double xStart = 10;
+		double x = xStart;
+		double y = 10;
+		double maxH = cbList.get(0).getHeight();
+
+		for (CrateBlock cb : cbList) {
+			if (x + cb.getWidth() > getWidth()) {
+				x = xStart;
+				y += maxH;
+				maxH = 0;
+			}
+
+			cb.setLX(x);
+			cb.setLY(y);
+
+			x += cb.getWidth();
+			if (maxH < cb.getHeight()) { maxH = cb.getHeight(); }
+		}
+	}
+
+	class CrateBlock extends LRectangleSprite implements Comparable<CrateBlock> {
+		final Crate crate;
+
+		CrateBlock(Crate crate) {
+			this.crate = crate;
+			RGB color = new RGB("#" + crate.getColor());
+			setFill(color);
+			setStroke(ColorUtil.blackOrWhite(color));
+		}
+
+		@Override
+		public int compareTo(CrateBlock o) {
+			if (crate.getLength() != o.crate.getLength()) {
+				return Double.compare(o.crate.getLength(), crate.getLength());
+			}
+
+			return Double.compare(o.crate.getWidth(), crate.getWidth());
+		}
 	}
 }
