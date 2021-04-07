@@ -6,12 +6,10 @@ import java.util.List;
 
 import com.sencha.gxt.chart.client.draw.Color;
 import com.sencha.gxt.chart.client.draw.RGB;
-import com.sencha.gxt.core.client.util.PreciseRectangle;
 
 import us.dontcareabout.gxt.client.draw.LRectangleSprite;
-import us.dontcareabout.gxt.client.draw.LTextSprite;
 import us.dontcareabout.gxt.client.draw.LayerSprite;
-import us.dontcareabout.gxt.client.draw.util.TextUtil;
+import us.dontcareabout.gxt.client.draw.component.TextButton;
 import us.dontcareabout.kkfan.client.component.FloorPlan;
 import us.dontcareabout.kkfan.client.util.ColorUtil;
 import us.dontcareabout.kkfan.shared.grpah.Polygon;
@@ -36,10 +34,7 @@ public class LocationLayer extends LayerSprite {
 	 */
 	private double ratio;
 
-	//其實 bg + nameTS 跟 TextButton 有 87% 相似
-	//但是 TextButton（目前）無法設定 stroke 之類的，所以還是自己手工處理... Orz
-	private LRectangleSprite bg = new LRectangleSprite();
-	private LTextSprite nameTS = new LTextSprite();
+	private TextButton bgNameTB = new TextButton();
 	private List<CrateBlock> cbList = new ArrayList<>();
 
 	public LocationLayer(Location location) {
@@ -51,15 +46,13 @@ public class LocationLayer extends LayerSprite {
 
 		RGB color = ColorUtil.get(location.getType());
 		Color complementary = ColorUtil.blackOrWhite(color);
-		bg.setFill(color);
-		bg.setStroke(complementary);
-		bg.setStrokeWidth(3);
-		add(bg);
-
-		nameTS.setText(location.getName());
-		nameTS.setFill(complementary);
-		nameTS.setOpacity(0.3);
-		add(nameTS);
+		bgNameTB.setBgColor(color);
+		bgNameTB.setBgStrokeColor(complementary);
+		bgNameTB.setBgStrokeWidth(3);
+		bgNameTB.setText(location.getName());
+		bgNameTB.setTextColor(complementary);
+		bgNameTB.setTextOpacity(0.3);
+		add(bgNameTB);
 	}
 
 	public void takeOver(Crate crate) {
@@ -89,18 +82,10 @@ public class LocationLayer extends LayerSprite {
 		}
 
 		ratio = newRatio;
-		bg.setLX(0);
-		bg.setLY(0);
-		bg.setWidth(getWidth());
-		bg.setHeight(getHeight());
 
-		//從 TextButton.adjustMember() 抄來的
-		int margin = 10;
-		TextUtil.autoResize(nameTS, getWidth() - margin * 2, getHeight() - margin * 2);
-		PreciseRectangle textBox = nameTS.getBBox();
-		nameTS.setLX((getWidth() - textBox.getWidth()) / 2.0);
-		nameTS.setLY((getHeight() - textBox.getHeight()) / 2.0 + TextUtil.getYOffset(nameTS));
-		////
+		bgNameTB.setLX(0);
+		bgNameTB.setLY(0);
+		bgNameTB.resize(getWidth(), getHeight());
 	}
 
 	/** 注意：沒有處理位置的邏輯，那歸 {@link #lineUp()} 處理 */
