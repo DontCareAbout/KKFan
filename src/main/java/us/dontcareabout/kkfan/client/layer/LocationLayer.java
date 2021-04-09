@@ -6,12 +6,15 @@ import java.util.List;
 
 import com.sencha.gxt.chart.client.draw.Color;
 import com.sencha.gxt.chart.client.draw.RGB;
+import com.sencha.gxt.chart.client.draw.sprite.SpriteOutEvent;
 
 import us.dontcareabout.gxt.client.draw.LRectangleSprite;
 import us.dontcareabout.gxt.client.draw.LayerSprite;
 import us.dontcareabout.gxt.client.draw.component.TextButton;
 import us.dontcareabout.kkfan.client.component.FloorPlan;
+import us.dontcareabout.kkfan.client.layer.gf.LayerSpriteWithTip;
 import us.dontcareabout.kkfan.client.util.ColorUtil;
+import us.dontcareabout.kkfan.client.util.StringUtil;
 import us.dontcareabout.kkfan.shared.grpah.Polygon;
 import us.dontcareabout.kkfan.shared.grpah.XY;
 import us.dontcareabout.kkfan.shared.vo.Crate;
@@ -77,8 +80,7 @@ public class LocationLayer extends LayerSprite {
 		for (CrateBlock cb : cbList) {
 			cb.setLX(cb.getLX() * ratioChange);
 			cb.setLY(cb.getLY() * ratioChange);
-			cb.setWidth(cb.getWidth() * ratioChange);
-			cb.setHeight(cb.getHeight() * ratioChange);
+			cb.resize(cb.getWidth() * ratioChange, cb.getHeight() * ratioChange);
 		}
 
 		ratio = newRatio;
@@ -94,8 +96,7 @@ public class LocationLayer extends LayerSprite {
 		cbList.add(result);
 		add(result);
 
-		result.setWidth(crate.getLength() * ratio);
-		result.setHeight(crate.getWidth() * ratio);
+		result.resize(crate.getLength() * ratio, crate.getWidth() * ratio);
 		return result;
 	}
 
@@ -125,15 +126,39 @@ public class LocationLayer extends LayerSprite {
 		}
 	}
 
-	class CrateBlock extends LRectangleSprite implements Comparable<CrateBlock> {
+	/**
+	 * 搞出 bg 跟 borders 的原因：
+	 *
+	 * 1. 如果用上 {@link #setBgStrokeColor(Color)}，那麼 {@link SpriteOutEvent} 觸發就會不正常。
+	 * 2. 如果用上下兩層 {@link LRectangleSprite} 來疊出 stroke 的效果，會無法做出 opcaity 的效果。
+	 * 3. 因為 GF 的 LPathSprite 還沒 ready，所以只好用四個 {@link LRectangleSprite} 來拼......
+	 */
+	class CrateBlock extends LayerSpriteWithTip implements Comparable<CrateBlock> {
 		final Crate crate;
+
+		LRectangleSprite bg = new LRectangleSprite();
+		LRectangleSprite[] borders = { new LRectangleSprite(), new LRectangleSprite(), new LRectangleSprite(), new LRectangleSprite()};
 
 		CrateBlock(Crate crate) {
 			this.crate = crate;
+
 			RGB color = new RGB("#" + crate.getColor());
-			setFill(color);
-			setOpacity(0.9);
-			setStroke(ColorUtil.blackOrWhite(color));
+			Color bOrW = ColorUtil.blackOrWhite(color);
+			double opacity = 0.9;
+
+			for (LRectangleSprite border : borders) {
+				border.setFill(bOrW);
+				border.setOpacity(opacity);
+				add(border);
+			}
+
+			bg.setFill(color);
+			bg.setOpacity(opacity);
+			add(bg);
+
+			tipConfig.setTitle(StringUtil.serial(crate));
+			//TODO body
+			refreshTip();
 		}
 
 		@Override
@@ -143,6 +168,30 @@ public class LocationLayer extends LayerSprite {
 			}
 
 			return Double.compare(o.crate.getWidth(), crate.getWidth());
+		}
+
+		@Override
+		protected void adjustMember() {
+			bg.setLX(1);
+			bg.setLY(1);
+			bg.setWidth(getWidth() - 2);
+			bg.setHeight(getHeight() - 2);
+
+			borders[0].setLX(0); borders[0].setLY(0);
+			borders[0].setWidth(getWidth());
+			borders[0].setHeight(1);
+
+			borders[1].setLX(0); borders[1].setLY(getHeight() - 1);
+			borders[1].setWidth(getWidth());
+			borders[1].setHeight(1);
+
+			borders[2].setLX(0); borders[2].setLY(0);
+			borders[2].setWidth(1);
+			borders[2].setHeight(getHeight());
+
+			borders[3].setLX(getWidth() - 1); borders[3].setLY(0);
+			borders[3].setWidth(1);
+			borders[3].setHeight(getHeight());
 		}
 	}
 }
