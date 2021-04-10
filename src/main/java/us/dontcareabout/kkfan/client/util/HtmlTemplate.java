@@ -9,6 +9,12 @@ import us.dontcareabout.kkfan.shared.vo.Crate;
 public interface HtmlTemplate extends XTemplates {
 	static HtmlTemplate tplt = GWT.create(HtmlTemplate.class);
 
+	@XTemplate(source = "CrateGridName.html")
+	SafeHtml crateGridName(String name, String textColor, String bgColor);
+
+	@XTemplate(source = "CrateGridLocation.html")
+	SafeHtml crateGridLocation(String name, String typeColor);
+
 	@XTemplate(source = "CrateTipTitle.html")
 	SafeHtml crateTipTitle(Crate crate);
 
