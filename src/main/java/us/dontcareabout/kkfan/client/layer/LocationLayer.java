@@ -1,5 +1,7 @@
 package us.dontcareabout.kkfan.client.layer;
 
+import static us.dontcareabout.kkfan.client.util.HtmlTemplate.tplt;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +16,6 @@ import us.dontcareabout.gxt.client.draw.component.TextButton;
 import us.dontcareabout.kkfan.client.component.FloorPlan;
 import us.dontcareabout.kkfan.client.layer.gf.LayerSpriteWithTip;
 import us.dontcareabout.kkfan.client.util.ColorUtil;
-import us.dontcareabout.kkfan.client.util.StringUtil;
 import us.dontcareabout.kkfan.shared.grpah.Polygon;
 import us.dontcareabout.kkfan.shared.grpah.XY;
 import us.dontcareabout.kkfan.shared.vo.Crate;
@@ -156,8 +157,9 @@ public class LocationLayer extends LayerSprite {
 			bg.setOpacity(opacity);
 			add(bg);
 
-			tipConfig.setTitle(StringUtil.serial(crate));
-			//TODO body
+			tipConfig.setAutoHide(false);
+			tipConfig.setTitle(tplt.crateTipTitle(crate));
+			tipConfig.setBody(tplt.crateTipBody(crate));
 			refreshTip();
 		}
 
