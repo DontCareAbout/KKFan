@@ -1,0 +1,42 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" 
+	xmlns:core="urn:import:com.sencha.gxt.widget.core.client" 
+	xmlns:b="urn:import:com.sencha.gxt.widget.core.client.button" 
+	xmlns:c="urn:import:com.sencha.gxt.widget.core.client.container"
+	xmlns:f="urn:import:com.sencha.gxt.widget.core.client.form"
+	xmlns:t="urn:import:com.sencha.gxt.widget.core.client.toolbar" 
+	xmlns:kk="urn:import:us.dontcareabout.kkfan.client.component">
+	
+	<ui:with field="vField" type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData">
+		<ui:attributes width="1" height="28" />
+	</ui:with>
+	<ui:with field="vTA" type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData">
+		<ui:attributes width="1" height="140" />
+	</ui:with>
+		
+	<core:FramedPanel headerVisible="false">
+		<c:VerticalLayoutContainer>
+			<f:FieldLabel text="尺寸" layoutData="{vField}">
+				<f:widget><t:LabelToolItem ui:field="size" /></f:widget>
+			</f:FieldLabel>
+			<f:FieldLabel text="位置類型" layoutData="{vField}">
+				<f:widget><kk:LocationTypeCB ui:field="locationType" /></f:widget>
+			</f:FieldLabel>
+			<f:FieldLabel text="所在位置" layoutData="{vField}">
+				<f:widget><kk:LocationCB ui:field="location" /></f:widget>
+			</f:FieldLabel>
+			<f:FieldLabel text="內容物" layoutData="{vTA}" labelAlign="TOP">
+				<f:widget><f:TextArea ui:field="item" /></f:widget>
+			</f:FieldLabel>
+			<f:FieldLabel text="備註" layoutData="{vTA}" labelAlign="TOP">
+				<f:widget><f:TextArea ui:field="note" /></f:widget>
+			</f:FieldLabel>
+		</c:VerticalLayoutContainer>
+		<core:button>
+			<b:TextButton ui:field="cancel" text="取消" />
+		</core:button>
+		<core:button>
+			<b:TextButton ui:field="submit" text="確定" />
+		</core:button>
+	</core:FramedPanel>
+</ui:UiBinder> 
