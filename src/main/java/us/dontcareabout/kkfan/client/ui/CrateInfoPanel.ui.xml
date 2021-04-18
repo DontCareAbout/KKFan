@@ -16,7 +16,7 @@
 		
 	<core:FramedPanel headerVisible="false">
 		<c:VerticalLayoutContainer>
-			<f:FieldLabel text="尺寸" layoutData="{vField}">
+			<f:FieldLabel text="尺寸 (LWH)" layoutData="{vField}">
 				<f:widget><t:LabelToolItem ui:field="size" /></f:widget>
 			</f:FieldLabel>
 			<f:FieldLabel text="位置類型" layoutData="{vField}">
@@ -25,7 +25,7 @@
 			<f:FieldLabel text="所在位置" layoutData="{vField}">
 				<f:widget><kk:LocationCB ui:field="location" /></f:widget>
 			</f:FieldLabel>
-			<f:FieldLabel text="內容物" layoutData="{vTA}" labelAlign="TOP">
+			<f:FieldLabel text="內容" layoutData="{vTA}" labelAlign="TOP">
 				<f:widget><f:TextArea ui:field="item" /></f:widget>
 			</f:FieldLabel>
 			<f:FieldLabel text="備註" layoutData="{vTA}" labelAlign="TOP">
