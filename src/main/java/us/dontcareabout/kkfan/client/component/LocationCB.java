@@ -47,30 +47,28 @@ public class LocationCB extends ComboBox<Location> {
 	 * @see #setType(LocationType)
 	 */
 	public void setLocation(Location location) {
-		if (!setType(location.getType())) { return; }
+		setType(location.getType());
 
-		setValue(location);
+		//如果 type 是 unborn 就會 disable
+		if (isEnabled()) { setValue(location); }
 	}
 
 	/**
-	 * 如果傳入的 type 並非地圖類型，則會變成 disable 狀態。
+	 * 如果傳入的 type 為 {@link LocationType#unborn}，則會變成 disable 狀態。
 	 * 選單內容會過濾、只剩下與傳入 type 相符的資料，
 	 * 且一律將 value 設為 null。
-	 *
-	 * @return {@link LocationType#isMapTypen(LocationType)}
 	 */
-	public boolean setType(LocationType type) {
-		boolean result = LocationType.isMapTypen(type);
-		setEnabled(result);
+	public void setType(LocationType type) {
+		boolean result = type == LocationType.unborn;
+		setEnabled(!result);
+		setValue(null);
 
-		if (!result) { return result; }
+		if (result) { return; }
 
 		//只有地圖 type 才要做（不然早就 disable 掉啦）
 		filter.setType(type);
 		getStore().setEnableFilters(false);
 		getStore().setEnableFilters(true);
-		setValue(null);
-		return result;
 	}
 
 	private class Filter implements StoreFilter<Location> {

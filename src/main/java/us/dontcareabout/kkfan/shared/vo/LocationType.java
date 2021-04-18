@@ -7,9 +7,4 @@ public enum LocationType {
 	/** 外出中 */ trip,
 	/** 尚未入賬 */ unborn,
 	;
-
-	/** @return 是否為地圖上的類型 */
-	public static boolean isMapTypen(LocationType type) {
-		return type == storage || type == gallery || type == somewhere;
-	}
 }
