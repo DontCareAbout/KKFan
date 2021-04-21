@@ -47,6 +47,10 @@ public 	class LayerSpriteWithTip extends LayerSprite {
 		tip.update(tipConfig);
 	}
 
+	public void hideTip() {
+		tip.hide();
+	}
+
 	/**
 	 * 設計成 protected 是為了能讓 child class 可以 override，
 	 * 以便在顯示 {@link ToolTip} 之前有機會呼叫 {@link #refreshTip()} 好變更內容。
