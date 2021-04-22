@@ -39,7 +39,7 @@ public class DataCenter {
 		//FIXME fetch real data
 		if (crateList == null) { crateList = Mocker.crateList(); }
 
-		eventBus.fireEvent(new CrateReadyEvent(crateList));
+		eventBus.fireEvent(new CrateReadyEvent());
 	}
 
 	public static HandlerRegistration addCrateReady(CrateReadyHandler handler) {
