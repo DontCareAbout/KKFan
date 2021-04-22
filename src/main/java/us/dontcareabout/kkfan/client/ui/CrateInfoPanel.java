@@ -14,9 +14,9 @@ import com.sencha.gxt.widget.core.client.toolbar.LabelToolItem;
 import us.dontcareabout.kkfan.client.component.LocationCB;
 import us.dontcareabout.kkfan.client.component.LocationTypeCB;
 import us.dontcareabout.kkfan.client.component.gf.RwdRootPanel;
-import us.dontcareabout.kkfan.client.data.DataCenter;
 import us.dontcareabout.kkfan.client.data.LocationReadyEvent;
 import us.dontcareabout.kkfan.client.data.LocationReadyEvent.LocationReadyHandler;
+import us.dontcareabout.kkfan.client.data.gf.Logistics;
 import us.dontcareabout.kkfan.client.util.StringUtil;
 import us.dontcareabout.kkfan.shared.vo.Crate;
 import us.dontcareabout.kkfan.shared.vo.LocationType;
@@ -37,12 +37,18 @@ public class CrateInfoPanel extends Composite {
 	public CrateInfoPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
 
-		DataCenter.addLocationReady(new LocationReadyHandler() {
+		Logistics.addHandler("location", new LocationReadyHandler() {
 			@Override
 			public void onLocationReady(LocationReadyEvent event) {
-				location.fillData(DataCenter.getLocationList());
+				location.fillData(Logistics.getData("location"));
 			}
 		});
+	}
+
+	@Override
+	protected void onLoad() {
+		super.onLoad();
+		Logistics.want("location");
 	}
 
 	public void refresh(Crate crate) {
