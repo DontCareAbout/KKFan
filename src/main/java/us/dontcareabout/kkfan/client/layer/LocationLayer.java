@@ -9,13 +9,18 @@ import java.util.List;
 import com.sencha.gxt.chart.client.draw.Color;
 import com.sencha.gxt.chart.client.draw.RGB;
 import com.sencha.gxt.chart.client.draw.sprite.SpriteOutEvent;
+import com.sencha.gxt.chart.client.draw.sprite.SpriteSelectionEvent;
+import com.sencha.gxt.chart.client.draw.sprite.SpriteSelectionEvent.SpriteSelectionHandler;
 
 import us.dontcareabout.gxt.client.draw.LRectangleSprite;
 import us.dontcareabout.gxt.client.draw.LayerSprite;
 import us.dontcareabout.gxt.client.draw.component.TextButton;
 import us.dontcareabout.kkfan.client.component.FloorPlan;
+import us.dontcareabout.kkfan.client.component.gf.RwdRootPanel;
 import us.dontcareabout.kkfan.client.layer.gf.LayerSpriteWithTip;
+import us.dontcareabout.kkfan.client.ui.CrateInfoPanel;
 import us.dontcareabout.kkfan.client.util.ColorUtil;
+import us.dontcareabout.kkfan.client.util.StringUtil;
 import us.dontcareabout.kkfan.shared.grpah.Polygon;
 import us.dontcareabout.kkfan.shared.grpah.XY;
 import us.dontcareabout.kkfan.shared.vo.Crate;
@@ -25,6 +30,8 @@ import us.dontcareabout.kkfan.shared.vo.Location;
  * TODO 目前只能一律視為矩形處理，等待 GF 的 LPathSprite... [遠目]
  */
 public class LocationLayer extends LayerSprite {
+	private static final CrateInfoPanel crateInfo = new CrateInfoPanel();
+
 	public final Location location;
 	public final XY left;
 	public final XY bottom;
@@ -161,6 +168,15 @@ public class LocationLayer extends LayerSprite {
 			tipConfig.setTitle(tplt.crateTipTitle(crate));
 			tipConfig.setBody(tplt.crateTipBody(crate));
 			refreshTip();
+
+			addSpriteSelectionHandler(new SpriteSelectionHandler() {
+				@Override
+				public void onSpriteSelect(SpriteSelectionEvent event) {
+					hideTip();
+					crateInfo.refresh(crate);
+					RwdRootPanel.dialog(crateInfo, CrateInfoPanel.W, CrateInfoPanel.H, StringUtil.serial(crate));
+				}
+			});
 		}
 
 		@Override
