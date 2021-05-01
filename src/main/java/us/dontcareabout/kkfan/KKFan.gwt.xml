@@ -3,6 +3,7 @@
 <module rename-to="KKFan">
 	<inherits name="us.dontcareabout.gxt.GXT" />
 	<inherits name="com.sencha.gxt.theme.gray.Gray"/>
+	<inherits name="com.github.nmorel.gwtjackson.GwtJackson" />
 
 	<source path="client" />
 	<source path="shared" />

@@ -47,6 +47,12 @@
 			<artifactId>gf</artifactId>
 			<version>0.1.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.nmorel.gwtjackson</groupId>
+			<artifactId>gwt-jackson</artifactId>
+			<version>0.15.4</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- 開發用 -->
 		<dependency>
