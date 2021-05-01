@@ -1,14 +1,25 @@
 package us.dontcareabout.kkfan.shared.vo;
 
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 /**
  * 若 {@link #getType()} 為 {@value LocationType#trip} 或 {@value LocationType#unborn}，
  * 則 {@link #getFloor()} 與 {@link #getPolygon()} 的值無意義。
  */
+@Entity
 public class Location {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	private String name;
 
+	@Enumerated(EnumType.STRING)
 	private LocationType type;
 
 	private int floor;
