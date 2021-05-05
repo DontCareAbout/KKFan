@@ -7,4 +7,8 @@ public enum LocationType {
 	/** 外出中 */ trip,
 	/** 尚未入賬 */ unborn,
 	;
+
+	public static boolean isMapType(LocationType type) {
+		return type != trip && type != unborn;
+	}
 }
