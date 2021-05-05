@@ -7,15 +7,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import us.dontcareabout.kkfan.shared.gf.HasId;
+
 /**
  * 若 {@link #getType()} 為 {@value LocationType#trip} 或 {@value LocationType#unborn}，
  * 則 {@link #getFloor()} 與 {@link #getPolygon()} 的值無意義。
  */
 @Entity
-public class Location {
+public class Location implements HasId<Long> {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 
 	private String name;
 
@@ -25,11 +27,13 @@ public class Location {
 	private int floor;
 	private String polygon;
 
-	public long getId() {
+	@Override
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	@Override
+	public void setId(Long id) {
 		this.id = id;
 	}
 
