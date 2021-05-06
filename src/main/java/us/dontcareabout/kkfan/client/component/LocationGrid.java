@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -14,6 +16,7 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
 import us.dontcareabout.gxt.client.component.Grid2;
+import us.dontcareabout.kkfan.client.util.StringUtil;
 import us.dontcareabout.kkfan.shared.vo.Location;
 import us.dontcareabout.kkfan.shared.vo.LocationType;
 
@@ -26,6 +29,10 @@ public class LocationGrid extends Grid2<Location> {
 
 	public void refresh(List<Location> data) {
 		getStore().replaceAll(data);
+	}
+
+	public HandlerRegistration addSelectionHandler(SelectionHandler<Location> h) {
+		return getSelectionModel().addSelectionHandler(h);
 	}
 
 	@Override
@@ -45,14 +52,22 @@ public class LocationGrid extends Grid2<Location> {
 		type.setCell(new AbstractCell<LocationType>() {
 			@Override
 			public void render(Context context, LocationType value, SafeHtmlBuilder sb) {
-				sb.appendHtmlConstant(value.toString());	//TODO 轉換成 UF 字串
+				sb.appendHtmlConstant(StringUtil.toString(value));
+			}
+		});
+		ColumnConfig<Location, Integer> floor = new ColumnConfig<>(properties.floor(), 100, "樓層");
+		floor.setCell(new AbstractCell<Integer>() {
+			@Override
+			public void render(Context context, Integer value, SafeHtmlBuilder sb) {
+				sb.appendHtmlConstant(StringUtil.floor(value));
 			}
 		});
 
 		List<ColumnConfig<Location, ?>> list = new ArrayList<>();
 		list.add(new ColumnConfig<Location, Long>(properties.id(), 50, "ID"));
+		list.add(new ColumnConfig<Location, String>(properties.name(), 150, "名稱"));
 		list.add(type);
-		list.add(new ColumnConfig<Location, String>(properties.name(), 100, "名稱"));
+		list.add(floor);
 		ColumnModel<Location> result = new ColumnModel<>(list);
 		return result;
 	}
@@ -61,5 +76,6 @@ public class LocationGrid extends Grid2<Location> {
 		 ValueProvider<Location, Long> id();
 		 ValueProvider<Location, String> name();
 		 ValueProvider<Location, LocationType> type();
+		 ValueProvider<Location, Integer> floor();
 	}
 }
