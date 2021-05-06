@@ -42,6 +42,7 @@ public class LocationEditor extends Composite implements Editor<Location> {
 	public void refresh(Location data) {
 		driver.edit(data);
 		root.setHeading(data.getId() == 0 ? "新增" : "編輯 (id=" + data.getId() + ")");
+		mapTypeCheck(data.getType());
 	}
 
 	public Location result() {
@@ -58,7 +59,11 @@ public class LocationEditor extends Composite implements Editor<Location> {
 
 	@UiHandler("type")
 	void typeChange(SelectionEvent<LocationType> event) {
-		boolean enable = LocationType.isMapType(event.getSelectedItem());
+		mapTypeCheck(event.getSelectedItem());
+	}
+
+	private void mapTypeCheck(LocationType type) {
+		boolean enable = LocationType.isMapType(type);
 		floor.setEnabled(enable);
 		polygon.setEnabled(enable);
 	}
