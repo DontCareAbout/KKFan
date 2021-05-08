@@ -6,10 +6,9 @@ import java.util.List;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.GwtEvent.Type;
 
-import us.dontcareabout.gwt.client.Console;
 import us.dontcareabout.kkfan.client.data.LocationReadyEvent.LocationReadyHandler;
+import us.dontcareabout.kkfan.client.data.gf.Callback;
 import us.dontcareabout.kkfan.client.data.gf.Supplier;
-import us.dontcareabout.kkfan.client.util.Mocker;
 import us.dontcareabout.kkfan.shared.vo.Location;
 
 public class LocationSupplier extends Supplier<List<Location>, LocationReadyHandler> {
@@ -30,8 +29,17 @@ public class LocationSupplier extends Supplier<List<Location>, LocationReadyHand
 
 	@Override
 	public void fetch() {
-		Console.log("fetch");
-		ready(Mocker.locationList());
+		DataCenter.locationRester.getList(new Callback<List<Location>>() {
+			@Override
+			public void onSuccess(List<Location> data) {
+				ready(data);
+			}
+
+			@Override
+			public void onError(Throwable exception) {
+				// TODO Auto-generated method stub
+			}
+		});
 	}
 
 	@Override
