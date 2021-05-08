@@ -2,48 +2,43 @@ package us.dontcareabout.kkfan.client.data;
 
 import java.util.List;
 
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.github.nmorel.gwtjackson.client.ObjectMapper;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.SimpleEventBus;
 
-import us.dontcareabout.kkfan.client.data.CrateReadyEvent.CrateReadyHandler;
-import us.dontcareabout.kkfan.client.data.LocationReadyEvent.LocationReadyHandler;
-import us.dontcareabout.kkfan.client.util.Mocker;
-import us.dontcareabout.kkfan.shared.vo.Crate;
+import us.dontcareabout.kkfan.client.data.gf.Callback;
+import us.dontcareabout.kkfan.client.data.gf.Logistics;
+import us.dontcareabout.kkfan.client.data.gf.MapperRoom;
+import us.dontcareabout.kkfan.client.data.gf.Rester;
 import us.dontcareabout.kkfan.shared.vo.Location;
 
 public class DataCenter {
 	private final static SimpleEventBus eventBus = new SimpleEventBus();
 
-	private static List<Location> locationList;
+	public static void init() {
+		MapperRoom.join("location", GWT.create(LocationMapper.class), GWT.create(LocationListMapper.class));
+		locationRester = new Rester<>("location");
+		Logistics.join(new LocationSupplier());
 
-	public static List<Location> getLocationList() {
-		return locationList;
+		Logistics.join(new CrateSupplier());
 	}
 
-	public static void wantLocation() {
-		//FIXME fetch real data
-		if (locationList == null) { locationList  = Mocker.locationList(); }
+	public static Rester<Location, Long> locationRester;
+	public static void save(Location data) {
+		locationRester.save(data, new Callback<Integer>() {
+			@Override
+			public void onSuccess(Integer data) {
+				Logistics.want("location");
+			}
 
-		eventBus.fireEvent(new LocationReadyEvent());
+			@Override
+			public void onError(Throwable exception) {
+				// TODO Auto-generated method stub
+			}
+		});
 	}
 
-	public static HandlerRegistration addLocationReady(LocationReadyHandler handler) {
-		return eventBus.addHandler(LocationReadyEvent.TYPE, handler);
-	}
-
-	////////////////
-
-	private static List<Crate> crateList = Mocker.crateList();
-
-	public static void wantCrate() {
-		//FIXME fetch real data
-		if (crateList == null) { crateList = Mocker.crateList(); }
-
-		eventBus.fireEvent(new CrateReadyEvent());
-	}
-
-	public static HandlerRegistration addCrateReady(CrateReadyHandler handler) {
-		return eventBus.addHandler(CrateReadyEvent.TYPE, handler);
-	}
-
+	// ==== Mapper Interface ==== //
+	public interface LocationMapper extends ObjectMapper<Location> {}
+	public interface LocationListMapper extends ObjectMapper<List<Location>> {}
 }
