@@ -5,6 +5,7 @@ import java.util.List;
 import com.github.nmorel.gwtjackson.client.ObjectMapper;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestBuilder.Method;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
@@ -48,8 +49,27 @@ public class Rester<T extends HasId<ID>, ID> {
 		}
 	}
 
+	/**
+	 * 依照 id 是否為 null 自動呼叫對應的 HTTP method。
+	 */
+	public void save(T data, Callback<Integer> callback) {
+		if (data.getId() == null) {
+			post(data, callback);
+		} else {
+			put(data, callback);
+		}
+	}
+
+	public void post(T data, Callback<Integer> callback) {
+		act(RequestBuilder.POST, name, data, callback);
+	}
+
 	public void put(T data, Callback<Integer> callback) {
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.PUT, name + "/" + data.getId());
+		act(RequestBuilder.PUT, name + "/" + data.getId(), data, callback);
+	}
+
+	private void act(Method method, String uri, T data, Callback<Integer> callback) {
+		RequestBuilder builder = new RequestBuilder(method, uri);
 		builder.setHeader("Content-Type", "application/json");
 		try {
 			builder.sendRequest(mapper.write(data), new RequestCallback() {
