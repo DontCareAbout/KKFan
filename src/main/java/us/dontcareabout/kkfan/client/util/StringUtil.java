@@ -4,7 +4,11 @@ import us.dontcareabout.kkfan.shared.vo.Crate;
 import us.dontcareabout.kkfan.shared.vo.LocationType;
 
 public class StringUtil {
-	public static String floor(int floor) {
+	public static final String SELECT_OR_NEW = "請點選資料或按下「新增」";
+
+	public static String floor(Integer floor) {
+		if (floor == null) { return ""; }
+
 		return floor > 0 ? floor + "F" : "B" + Math.abs(floor);
 	}
 
