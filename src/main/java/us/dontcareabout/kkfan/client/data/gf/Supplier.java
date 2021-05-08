@@ -9,6 +9,7 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.GwtEvent.Type;
 
 public abstract class Supplier<D, H extends EventHandler> {
+	private boolean fetchLock;
 	private D data;
 	private Date expire;
 
@@ -34,8 +35,10 @@ public abstract class Supplier<D, H extends EventHandler> {
 	 * 若可以則呼叫 {@link #fireEvent()}，否則呼叫 {@link #fetch()}。
 	 */
 	public void tally() {
+		if (fetchLock) { return; }
+
 		if (data == null || expire == null) {
-			fetch();
+			tallyForced();
 			return;
 		}
 
@@ -44,6 +47,12 @@ public abstract class Supplier<D, H extends EventHandler> {
 			return;
 		}
 
+		tallyForced();
+	}
+
+	/** 強制呼叫 {@link #fetch()} */
+	public void tallyForced() {
+		fetchLock = true;
 		fetch();
 	}
 
@@ -57,6 +66,7 @@ public abstract class Supplier<D, H extends EventHandler> {
 
 	protected void ready(D data) {
 		this.data = data;
+		fetchLock = false;
 		expire = nextExpire();
 		fireEvent();
 	}
