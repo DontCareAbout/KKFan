@@ -10,8 +10,8 @@ import javax.persistence.Id;
 import us.dontcareabout.kkfan.shared.gf.HasId;
 
 /**
- * 若 {@link #getType()} 為 {@value LocationType#trip} 或 {@value LocationType#unborn}，
- * 則 {@link #getFloor()} 與 {@link #getPolygon()} 的值無意義。
+ * 若 {@link #getType()} 為不為 map type（{@link LocationType#isMapType(LocationType)}），
+ * 則 {@link #getFloor()} 與 {@link #getPolygon()} 的值應為 null（{@link #clean()}）。
  */
 @Entity
 public class Location implements HasId<Long> {
@@ -24,7 +24,7 @@ public class Location implements HasId<Long> {
 	@Enumerated(EnumType.STRING)
 	private LocationType type;
 
-	private int floor;
+	private Integer floor;
 	private String polygon;
 
 	@Override
@@ -53,11 +53,11 @@ public class Location implements HasId<Long> {
 		this.type = type;
 	}
 
-	public int getFloor() {
+	public Integer getFloor() {
 		return floor;
 	}
 
-	public void setFloor(int floor) {
+	public void setFloor(Integer floor) {
 		this.floor = floor;
 	}
 
@@ -67,5 +67,13 @@ public class Location implements HasId<Long> {
 
 	public void setPolygon(String polygon) {
 		this.polygon = polygon;
+	}
+
+	public Location clean() {
+		if (LocationType.isMapType(type)) { return this; }
+
+		floor = null;
+		polygon = null;
+		return this;
 	}
 }
