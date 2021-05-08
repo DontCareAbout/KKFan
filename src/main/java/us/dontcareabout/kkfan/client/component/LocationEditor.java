@@ -40,13 +40,15 @@ public class LocationEditor extends Composite implements Editor<Location> {
 	}
 
 	public void refresh(Location data) {
+		//新建資料預設 type 為 unborn
+		data.setType(data.getId() == null ? LocationType.unborn : data.getType());
 		driver.edit(data);
-		root.setHeading(data.getId() == 0 ? "新增" : "編輯 (id=" + data.getId() + ")");
+		root.setHeading(data.getId() == null ? "新增" : "編輯 (id=" + data.getId() + ")");
 		mapTypeCheck(data.getType());
 	}
 
 	public Location result() {
-		return driver.flush();
+		return driver.flush().clean();
 	}
 
 	public HandlerRegistration addCancelHandler(SelectHandler handler) {
