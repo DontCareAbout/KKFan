@@ -24,6 +24,10 @@ public class Logistics {
 		find(name).tally();
 	}
 
+	public static void wantForced(String name) {
+		find(name).tallyForced();
+	}
+
 	@SuppressWarnings("unchecked")
 	public static <D> D getData(String name) {
 		return (D)find(name).getData();
