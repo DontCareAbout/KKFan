@@ -28,7 +28,7 @@ public class DataCenter {
 		locationRester.save(data, new Callback<Integer>() {
 			@Override
 			public void onSuccess(Integer data) {
-				Logistics.want("location");
+				Logistics.wantForced("location");
 			}
 
 			@Override
