@@ -38,6 +38,20 @@ public class DataCenter {
 		});
 	}
 
+	public static void delete(Location data) {
+		locationRester.delete(data, new Callback<Integer>() {
+			@Override
+			public void onSuccess(Integer data) {
+				Logistics.wantForced("location");
+			}
+
+			@Override
+			public void onError(Throwable exception) {
+				// TODO Auto-generated method stub
+			}
+		});
+	}
+
 	// ==== Mapper Interface ==== //
 	public interface LocationMapper extends ObjectMapper<Location> {}
 	public interface LocationListMapper extends ObjectMapper<List<Location>> {}
