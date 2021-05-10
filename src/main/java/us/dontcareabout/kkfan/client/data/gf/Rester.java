@@ -49,6 +49,25 @@ public class Rester<T extends HasId<ID>, ID> {
 		}
 	}
 
+	public void delete(T data, Callback<Integer> callback) {
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.DELETE, name + "/" + data.getId());
+		try {
+			builder.sendRequest(null, new RequestCallback() {
+				@Override
+				public void onResponseReceived(Request request, Response response) {
+					callback.onSuccess(response.getStatusCode());
+				}
+
+				@Override
+				public void onError(Request request, Throwable exception) {
+					callback.onError(exception);
+				}
+			});
+		} catch (RequestException exception) {
+			callback.onError(exception);
+		}
+	}
+
 	/**
 	 * 依照 id 是否為 null 自動呼叫對應的 HTTP method。
 	 */
