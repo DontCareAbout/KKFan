@@ -8,15 +8,20 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.sencha.gxt.cell.core.client.TextButtonCell;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
 import us.dontcareabout.gxt.client.component.Grid2;
+import us.dontcareabout.kkfan.client.data.DataCenter;
 import us.dontcareabout.kkfan.client.util.StringUtil;
+import us.dontcareabout.kkfan.client.util.gf.ColumnConfigBuilder;
 import us.dontcareabout.kkfan.shared.vo.Location;
 import us.dontcareabout.kkfan.shared.vo.LocationType;
 
@@ -63,11 +68,24 @@ public class LocationGrid extends Grid2<Location> {
 			}
 		});
 
+		TextButtonCell deleteBtn = new TextButtonCell();
+		deleteBtn.addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				int row = event.getContext().getIndex();
+				DataCenter.delete(getStore().get(row));
+			}
+		});
+
 		List<ColumnConfig<Location, ?>> list = new ArrayList<>();
 		list.add(new ColumnConfig<Location, Long>(properties.id(), 50, "ID"));
 		list.add(new ColumnConfig<Location, String>(properties.name(), 150, "名稱"));
 		list.add(type);
 		list.add(floor);
+		list.add(
+			new ColumnConfigBuilder<Location, String>("刪除")
+			.setWidth(50).setCell(deleteBtn).centerStyle().build()
+		);
 		ColumnModel<Location> result = new ColumnModel<>(list);
 		return result;
 	}
