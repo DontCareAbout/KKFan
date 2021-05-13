@@ -53,21 +53,18 @@ public class LocationGrid extends Grid2<Location> {
 
 	@Override
 	protected ColumnModel<Location> genColumnModel() {
-		ColumnConfig<Location, LocationType> type = new ColumnConfig<>(properties.type(), 100, "類型");
-		type.setCell(new AbstractCell<LocationType>() {
+		AbstractCell<LocationType> typeCell = new AbstractCell<LocationType>() {
 			@Override
 			public void render(Context context, LocationType value, SafeHtmlBuilder sb) {
 				sb.appendHtmlConstant(StringUtil.toString(value));
 			}
-		});
-		ColumnConfig<Location, Integer> floor = new ColumnConfig<>(properties.floor(), 100, "樓層");
-		floor.setCell(new AbstractCell<Integer>() {
+		};
+		AbstractCell<Integer> floorCell = new AbstractCell<Integer>() {
 			@Override
 			public void render(Context context, Integer value, SafeHtmlBuilder sb) {
 				sb.appendHtmlConstant(StringUtil.floor(value));
 			}
-		});
-
+		};
 		TextButtonCell deleteBtn = new TextButtonCell();
 		deleteBtn.addSelectHandler(new SelectHandler() {
 			@Override
@@ -80,8 +77,14 @@ public class LocationGrid extends Grid2<Location> {
 		List<ColumnConfig<Location, ?>> list = new ArrayList<>();
 		list.add(new ColumnConfig<Location, Long>(properties.id(), 50, "ID"));
 		list.add(new ColumnConfig<Location, String>(properties.name(), 150, "名稱"));
-		list.add(type);
-		list.add(floor);
+		list.add(
+			new ColumnConfigBuilder<Location, LocationType>(properties.type())
+			.setWidth(100).setHeader("類型").setCell(typeCell).build()
+		);
+		list.add(
+			new ColumnConfigBuilder<Location, Integer>(properties.floor())
+			.setWidth(100).setHeader("樓層").setCell(floorCell).build()
+		);
 		list.add(
 			new ColumnConfigBuilder<Location, String>("刪除")
 			.setWidth(50).setCell(deleteBtn).centerStyle().build()
