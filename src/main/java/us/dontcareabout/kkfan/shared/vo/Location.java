@@ -26,6 +26,7 @@ public class Location implements HasId<Long> {
 
 	private Integer floor;
 	private String polygon;
+	private boolean disable;
 
 	@Override
 	public Long getId() {
@@ -67,6 +68,14 @@ public class Location implements HasId<Long> {
 
 	public void setPolygon(String polygon) {
 		this.polygon = polygon;
+	}
+
+	public boolean isDisable() {
+		return disable;
+	}
+
+	public void setDisable(boolean disable) {
+		this.disable = disable;
 	}
 
 	public Location clean() {
