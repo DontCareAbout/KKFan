@@ -19,6 +19,7 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
 import us.dontcareabout.gxt.client.component.Grid2;
+import us.dontcareabout.gxt.client.model.GetValueProvider;
 import us.dontcareabout.kkfan.client.data.DataCenter;
 import us.dontcareabout.kkfan.client.util.StringUtil;
 import us.dontcareabout.kkfan.client.util.gf.ColumnConfigBuilder;
@@ -65,6 +66,16 @@ public class LocationGrid extends Grid2<Location> {
 				sb.appendHtmlConstant(StringUtil.floor(value));
 			}
 		};
+		TextButtonCell disableBtn = new TextButtonCell();
+		disableBtn.addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
+				int row = event.getContext().getIndex();
+				Location loc = getStore().get(row);
+				loc.setDisable(!loc.isDisable());
+				DataCenter.save(loc);
+			}
+		});
 		TextButtonCell deleteBtn = new TextButtonCell();
 		deleteBtn.addSelectHandler(new SelectHandler() {
 			@Override
@@ -84,6 +95,15 @@ public class LocationGrid extends Grid2<Location> {
 		list.add(
 			new ColumnConfigBuilder<Location, Integer>(properties.floor())
 			.setWidth(100).setHeader("樓層").setCell(floorCell).build()
+		);
+		list.add(
+			new ColumnConfigBuilder<Location, String>(new GetValueProvider<Location, String>() {
+				@Override
+				public String getValue(Location object) {
+					return object.isDisable() ? "啟用" : "停用";
+				}
+			})
+			.setWidth(50).setCell(disableBtn).centerStyle().build()
 		);
 		list.add(
 			new ColumnConfigBuilder<Location, String>("刪除")
