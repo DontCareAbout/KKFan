@@ -9,11 +9,9 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Composite;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import us.dontcareabout.kkfan.client.component.LocationEditor;
 import us.dontcareabout.kkfan.client.component.LocationGrid;
-import us.dontcareabout.kkfan.client.data.DataCenter;
 import us.dontcareabout.kkfan.client.data.LocationReadyEvent;
 import us.dontcareabout.kkfan.client.data.LocationReadyEvent.LocationReadyHandler;
 import us.dontcareabout.kkfan.client.data.gf.Logistics;
@@ -32,18 +30,6 @@ public class LocationView extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		panel.setPixelSize(300, 320);
-		editor.addSubmitHandler(new SelectHandler() {
-			@Override
-			public void onSelect(SelectEvent event) {
-				DataCenter.save(editor.result());
-			}
-		});
-		editor.addCancelHandler(new SelectHandler() {
-			@Override
-			public void onSelect(SelectEvent event) {
-				editor.mask(StringUtil.SELECT_OR_NEW);
-			}
-		});
 
 		Logistics.addHandler("location", new LocationReadyHandler() {
 			@Override
