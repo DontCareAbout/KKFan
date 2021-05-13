@@ -8,7 +8,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.sencha.gxt.cell.core.client.TextButtonCell;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -20,6 +19,7 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
 import us.dontcareabout.gxt.client.component.Grid2;
 import us.dontcareabout.gxt.client.model.GetValueProvider;
+import us.dontcareabout.kkfan.client.component.gf.TextButtonCell2;
 import us.dontcareabout.kkfan.client.data.DataCenter;
 import us.dontcareabout.kkfan.client.util.StringUtil;
 import us.dontcareabout.kkfan.client.util.gf.ColumnConfigBuilder;
@@ -66,7 +66,7 @@ public class LocationGrid extends Grid2<Location> {
 				sb.appendHtmlConstant(StringUtil.floor(value));
 			}
 		};
-		TextButtonCell disableBtn = new TextButtonCell();
+		TextButtonCell2 disableBtn = new TextButtonCell2();
 		disableBtn.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
@@ -76,7 +76,7 @@ public class LocationGrid extends Grid2<Location> {
 				DataCenter.save(loc);
 			}
 		});
-		TextButtonCell deleteBtn = new TextButtonCell();
+		TextButtonCell2 deleteBtn = new TextButtonCell2();
 		deleteBtn.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
