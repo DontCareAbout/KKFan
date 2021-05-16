@@ -40,7 +40,7 @@ public class LocationEditor extends Composite implements Editor<Location> {
 		//新建資料預設 type 為 unborn
 		data.setType(data.getId() == null ? LocationType.unborn : data.getType());
 		driver.edit(data);
-		root.setHeading(data.getId() == null ? "新增" : "編輯 (id=" + data.getId() + ")");
+		root.setHeading(StringUtil.newOrEdit(data));
 		mapTypeCheck(data.getType());
 	}
 
