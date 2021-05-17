@@ -10,6 +10,7 @@ import us.dontcareabout.kkfan.client.data.gf.Callback;
 import us.dontcareabout.kkfan.client.data.gf.Logistics;
 import us.dontcareabout.kkfan.client.data.gf.MapperRoom;
 import us.dontcareabout.kkfan.client.data.gf.Rester;
+import us.dontcareabout.kkfan.shared.vo.Crate;
 import us.dontcareabout.kkfan.shared.vo.Location;
 
 public class DataCenter {
@@ -20,6 +21,8 @@ public class DataCenter {
 		locationRester = new Rester<>("location");
 		Logistics.join(new LocationSupplier());
 
+		MapperRoom.join("crate", GWT.create(CrateMapper.class), GWT.create(CrateListMapper.class));
+		crateRester = new Rester<>("crate");
 		Logistics.join(new CrateSupplier());
 	}
 
@@ -33,7 +36,7 @@ public class DataCenter {
 
 			@Override
 			public void onError(Throwable exception) {
-				// TODO Auto-generated method stub
+
 			}
 		});
 	}
@@ -47,7 +50,36 @@ public class DataCenter {
 
 			@Override
 			public void onError(Throwable exception) {
-				// TODO Auto-generated method stub
+
+			}
+		});
+	}
+
+	public static Rester<Crate, Long> crateRester;
+	public static void save(Crate data) {
+		crateRester.save(data, new Callback<Integer>() {
+			@Override
+			public void onSuccess(Integer data) {
+				Logistics.wantForced("crate");
+			}
+
+			@Override
+			public void onError(Throwable exception) {
+
+			}
+		});
+	}
+
+	public static void delete(Crate data) {
+		crateRester.delete(data, new Callback<Integer>() {
+			@Override
+			public void onSuccess(Integer data) {
+				Logistics.wantForced("crate");
+			}
+
+			@Override
+			public void onError(Throwable exception) {
+
 			}
 		});
 	}
@@ -55,4 +87,6 @@ public class DataCenter {
 	// ==== Mapper Interface ==== //
 	public interface LocationMapper extends ObjectMapper<Location> {}
 	public interface LocationListMapper extends ObjectMapper<List<Location>> {}
+	public interface CrateMapper extends ObjectMapper<Crate> {}
+	public interface CrateListMapper extends ObjectMapper<List<Crate>> {}
 }
