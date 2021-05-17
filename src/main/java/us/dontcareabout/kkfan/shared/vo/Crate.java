@@ -2,13 +2,30 @@ package us.dontcareabout.kkfan.shared.vo;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import us.dontcareabout.kkfan.shared.gf.HasId;
+
 /**
  * 「箱子」的對應 VO。
  * <p>
- * 若 {@link #getDeleteTime()} 不為 null 表示該筆資料已經刪除。
+ * <h1>商業邏輯哏：</h1>
+ * <ul>
+ * 	<li>{@link #getLength()} 不能小於 {@link #getWidth()} （{@link #clean()}）</li>
+ * 	<li>若 {@link #getDeleteTime()} 不為 null 表示該筆資料已經刪除。</li>
+ * </ul>
  */
-public class Crate {
-	private long id;
+@Entity
+public class Crate implements HasId<Long> {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 
 	private Date createTime;
 	private Date deleteTime;
@@ -29,17 +46,21 @@ public class Crate {
 	////
 
 	//管理區
+	@Transient @JsonIgnore
 	private Location location;
+	private Long locationId;
 	private String item;
 	////
 
 	private String note;
 
-	public long getId() {
+	@Override
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	@Override
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -57,6 +78,11 @@ public class Crate {
 
 	public void setDeleteTime(Date deleteTime) {
 		this.deleteTime = deleteTime;
+	}
+
+	@JsonIgnore
+	public boolean isDelete() {
+		return deleteTime != null;
 	}
 
 	public String getCategory() {
@@ -129,6 +155,14 @@ public class Crate {
 		this.mfr = mfr;
 	}
 
+	public Long getLocationId() {
+		return locationId;
+	}
+
+	public void setLocationId(Long locationId) {
+		this.locationId = locationId;
+	}
+
 	public Location getLocation() {
 		return location;
 	}
@@ -152,5 +186,17 @@ public class Crate {
 
 	public void setNote(String note) {
 		this.note = note;
+	}
+
+	public Crate clean() {
+		if (getLength() <= getWidth()) {
+			double tmp = getLength();
+			length = width;
+			width = tmp;
+		}
+
+		locationId = location != null ? location.getId() : null;
+
+		return this;
 	}
 }
