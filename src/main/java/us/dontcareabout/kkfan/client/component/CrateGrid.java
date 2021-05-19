@@ -7,6 +7,8 @@ import java.util.List;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -19,6 +21,7 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import us.dontcareabout.gxt.client.component.Grid2;
 import us.dontcareabout.gxt.client.model.GetValueProvider;
 import us.dontcareabout.kkfan.client.util.ColorUtil;
+import us.dontcareabout.kkfan.client.util.gf.ColumnConfigBuilder;
 import us.dontcareabout.kkfan.shared.vo.Crate;
 import us.dontcareabout.kkfan.shared.vo.Location;
 
@@ -34,6 +37,10 @@ public class CrateGrid extends Grid2<Crate> {
 		getStore().replaceAll(data);
 	}
 
+	public HandlerRegistration addSelectionHandler(SelectionHandler<Crate> h) {
+		return getSelectionModel().addSelectionHandler(h);
+	}
+
 	@Override
 	protected ListStore<Crate> genListStore() {
 		ListStore<Crate> result = new ListStore<>(new ModelKeyProvider<Crate>() {
@@ -43,13 +50,11 @@ public class CrateGrid extends Grid2<Crate> {
 			}
 		});
 		return result;
-
 	}
 
 	@Override
 	protected ColumnModel<Crate> genColumnModel() {
-		ColumnConfig<Crate, Crate> serial = new ColumnConfig<>(new IdentityValueProvider<>(), 10, "編號");
-		serial.setCell(new AbstractCell<Crate>() {
+		AbstractCell<Crate> serial = new AbstractCell<Crate>() {
 			@Override
 			public void render(Context context, Crate value, SafeHtmlBuilder sb) {
 				String string = value.getCategory() + "-" + value.getNumber();
@@ -62,33 +67,47 @@ public class CrateGrid extends Grid2<Crate> {
 					)
 				);
 			}
-		});
-		serial.setCellPadding(false);
+		};
 
-		ColumnConfig<Crate, Location> location = new ColumnConfig<>(properties.location(), 10, "位置");
-		location.setCell(new AbstractCell<Location>() {
+		AbstractCell<Location> location = new AbstractCell<Location>() {
 			@Override
 			public void render(Context context, Location value, SafeHtmlBuilder sb) {
 				sb.append(tplt.crateGridLocation(value.getName(), ColorUtil.get(value.getType()).toString()));
 			}
-		});
-		location.setCellPadding(false);
+		};
 
 		List<ColumnConfig<Crate, ?>> list = new ArrayList<>();
-		list.add(serial);
-		list.add(new ColumnConfig<>(new GetValueProvider<Crate, String>() {
-			@Override
-			public String getValue(Crate object) {
-				return object.getLength() + " x " + object.getWidth() + " x " + object.getHeight();
-			}
-		}, 10, "尺寸"));
-		list.add(location);
+		list.add(
+			new ColumnConfigBuilder<Crate, Crate>(new IdentityValueProvider<>())
+				.setWidth(8).setHeader("編號").setCell(serial).setCellPedding(false).build()
+		);
+		list.add(
+			new ColumnConfigBuilder<Crate, Location>(properties.location())
+				.setWidth(8).setHeader("位置").setCell(location).setCellPedding(false).build()
+		);
+		list.add(
+			new ColumnConfigBuilder<Crate, String>(new GetValueProvider<Crate, String>() {
+				@Override
+				public String getValue(Crate object) {
+					return object.getLength() + " x " + object.getWidth() + " H" + object.getHeight();
+				}
+			}).setWidth(10).setHeader("尺寸").build()
+		);
+		list.add(
+			new ColumnConfigBuilder<Crate, String>(properties.mfr())
+				.setWidth(10).setHeader("製造商").build()
+		);
+		list.add(
+			new ColumnConfigBuilder<Crate, Integer>(properties.mfYear())
+				.setWidth(8).setHeader("製造年份").build()
+		);
 		return new ColumnModel<>(list);
 	}
 
 	interface Properties extends PropertyAccess<Crate> {
 		ValueProvider<Crate, Long> id();
-		ValueProvider<Crate, String> color();
 		ValueProvider<Crate, Location> location();
+		ValueProvider<Crate, String> mfr();
+		ValueProvider<Crate, Integer> mfYear();
 	}
 }
