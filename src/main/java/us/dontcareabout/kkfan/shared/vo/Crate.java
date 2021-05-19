@@ -41,7 +41,7 @@ public class Crate implements HasId<Long> {
 	////
 
 	//製造資訊區
-	private int mfYear;
+	private Integer mfYear;
 	private String mfr;
 	////
 
@@ -138,11 +138,11 @@ public class Crate implements HasId<Long> {
 	}
 
 	/** @return 製造年份 */
-	public int getMfYear() {
+	public Integer getMfYear() {
 		return mfYear;
 	}
 
-	public void setMfYear(int mfYear) {
+	public void setMfYear(Integer mfYear) {
 		this.mfYear = mfYear;
 	}
 
@@ -189,6 +189,8 @@ public class Crate implements HasId<Long> {
 	}
 
 	public Crate clean() {
+		if (createTime == null) { createTime = new Date(); }
+
 		if (getLength() <= getWidth()) {
 			double tmp = getLength();
 			length = width;
