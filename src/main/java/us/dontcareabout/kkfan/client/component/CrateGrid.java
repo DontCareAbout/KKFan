@@ -17,6 +17,7 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.RowExpander;
 
 import us.dontcareabout.gxt.client.component.Grid2;
 import us.dontcareabout.gxt.client.model.GetValueProvider;
@@ -28,8 +29,18 @@ import us.dontcareabout.kkfan.shared.vo.Location;
 public class CrateGrid extends Grid2<Crate> {
 	private static final Properties properties = GWT.create(Properties.class);
 
+	private RowExpander<Crate> rowExpander = new RowExpander<>(
+		new AbstractCell<Crate>() {
+			@Override
+			public void render(Context context, Crate value, SafeHtmlBuilder sb) {
+				sb.append(tplt.crateGridExpand(value));
+			}
+		}
+	);
+
 	public CrateGrid() {
 		init();
+		rowExpander.initPlugin(this);
 		getView().setAutoFill(true);
 	}
 
@@ -77,6 +88,7 @@ public class CrateGrid extends Grid2<Crate> {
 		};
 
 		List<ColumnConfig<Crate, ?>> list = new ArrayList<>();
+		list.add(rowExpander);
 		list.add(
 			new ColumnConfigBuilder<Crate, Crate>(new IdentityValueProvider<>())
 				.setWidth(8).setHeader("編號").setCell(serial).setCellPedding(false).build()
