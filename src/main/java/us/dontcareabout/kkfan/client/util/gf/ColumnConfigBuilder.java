@@ -18,6 +18,8 @@ public class ColumnConfigBuilder<T, V> {
 	private Cell<V> cell;
 	private SafeStyles textStyles;
 
+	private boolean cellPedding = true;
+
 	public ColumnConfigBuilder(ValueProvider<T, V> vp) {
 		 result = new ColumnConfig<>(vp);
 	}
@@ -39,6 +41,8 @@ public class ColumnConfigBuilder<T, V> {
 		if (header != null) { result.setHeader(header); }
 		if (cell != null) { result.setCell(cell); }
 		if (textStyles != null) { result.setColumnTextStyle(textStyles); }
+
+		result.setCellPadding(cellPedding);
 		return result;
 	}
 
@@ -64,6 +68,11 @@ public class ColumnConfigBuilder<T, V> {
 
 	public ColumnConfigBuilder<T, V> setTextStyles(SafeStyles textStyles) {
 		this.textStyles = textStyles;
+		return this;
+	}
+
+	public ColumnConfigBuilder<T, V> setCellPedding(boolean cellPedding) {
+		this.cellPedding = cellPedding;
 		return this;
 	}
 }
