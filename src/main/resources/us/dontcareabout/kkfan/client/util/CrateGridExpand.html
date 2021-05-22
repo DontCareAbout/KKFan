@@ -4,7 +4,15 @@
 		<th style="width:50%;font-size:12px;">備註：</th>
 	</tr>
 	<tr>
-		<td><pre style='margin:3px 3px 3px 20px;'>{item}</pre></td>
-		<td><pre style='margin:3px 3px 3px 20px;'>{note}</pre></td>
+		<td>
+			<tpl if="item != null">
+			<pre style='margin:3px 3px 3px 20px;'>{item}</pre>
+			</tpl>
+		</td>
+		<td>
+			<tpl if="note != null">
+			<pre style='margin:3px 3px 3px 20px;'>{note}</pre>
+			</tpl>
+		</td>
 	</tr>
 </table>
