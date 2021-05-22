@@ -7,7 +7,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.Composite;
-import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 
 import us.dontcareabout.kkfan.client.component.LocationEditor;
@@ -23,13 +22,10 @@ public class LocationView extends Composite {
 	interface LocationPanelUiBinder extends UiBinder<Widget, LocationView> {}
 
 	@UiField LocationGrid grid;
-	@UiField VerticalLayoutContainer panel;
 	@UiField LocationEditor editor;
 
 	public LocationView() {
 		initWidget(uiBinder.createAndBindUi(this));
-
-		panel.setPixelSize(300, 320);
 
 		Logistics.addHandler("location", new LocationReadyHandler() {
 			@Override
@@ -38,18 +34,21 @@ public class LocationView extends Composite {
 				editor.mask(StringUtil.SELECT_OR_NEW);
 			}
 		});
+	}
+
+	@Override
+	protected void onLoad() {
+		super.onLoad();
 		Logistics.want("location");
 	}
 
 	@UiHandler("grid")
 	void dataSelect(SelectionEvent<Location> event) {
 		editor.refresh(event.getSelectedItem());
-		editor.unmask();
 	}
 
 	@UiHandler("newBtn")
 	void newSelect(SelectEvent event) {
 		editor.refresh(new Location());
-		editor.unmask();
 	}
 }

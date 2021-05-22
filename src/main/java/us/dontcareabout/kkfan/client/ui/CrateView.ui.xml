@@ -4,11 +4,15 @@
 	xmlns:kk="urn:import:us.dontcareabout.kkfan.client.component" 
 	xmlns:b="urn:import:com.sencha.gxt.widget.core.client.button">
 
-	<ui:with field="hGrid" type="com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData">
-		<ui:attributes width="0.6" height="1" />
+	<ui:with field="editorMargins" type="com.sencha.gxt.core.client.util.Margins" >
+		<ui:attributes top="10" bottom="0" left="10" right="10" />
 	</ui:with>
-	<ui:with field="hPanel" type="com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData">
-		<ui:attributes width="0.4" height="1" />
+
+	<ui:with field="hGrid" type="com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData">
+		<ui:attributes width="1" height="1" />
+	</ui:with>
+	<ui:with field="hEditor" type="com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData">
+		<ui:attributes width="320" height="620" margins="{editorMargins}" />
 	</ui:with>
 
 	<ui:with field="newMargins" type="com.sencha.gxt.core.client.util.Margins" >
@@ -23,11 +27,9 @@
 	
 	<c:HorizontalLayoutContainer>
 		<kk:CrateGrid ui:field="grid" layoutData="{hGrid}" />
-		<c:CenterLayoutContainer layoutData="{hPanel}">
-			<c:VerticalLayoutContainer ui:field="panel">
-				<b:TextButton ui:field="newBtn" layoutData="{vNew}" text="新增" />
-				<kk:CrateEditor ui:field="editor" layoutData="{vEditor}" />
-			</c:VerticalLayoutContainer>
-		</c:CenterLayoutContainer>
+		<c:VerticalLayoutContainer layoutData="{hEditor}">
+			<b:TextButton ui:field="newBtn" layoutData="{vNew}" text="新增" />
+			<kk:CrateEditor ui:field="editor" layoutData="{vEditor}" />
+		</c:VerticalLayoutContainer>
 	</c:HorizontalLayoutContainer>
 </ui:UiBinder> 
