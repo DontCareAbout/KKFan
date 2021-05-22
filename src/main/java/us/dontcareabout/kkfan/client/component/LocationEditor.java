@@ -42,6 +42,7 @@ public class LocationEditor extends Composite implements Editor<Location> {
 		driver.edit(data);
 		root.setHeading(StringUtil.newOrEdit(data));
 		mapTypeCheck(data.getType());
+		unmask();
 	}
 
 	public Location result() {

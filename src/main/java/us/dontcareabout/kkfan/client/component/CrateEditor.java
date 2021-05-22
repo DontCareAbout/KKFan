@@ -67,6 +67,7 @@ public class CrateEditor extends Composite implements Editor<Crate> {
 
 		driver.edit(data);
 		root.setHeading(StringUtil.newOrEdit(data));
+		unmask();
 	}
 
 	public Crate result() {
