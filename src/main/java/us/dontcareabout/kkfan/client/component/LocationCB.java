@@ -53,19 +53,8 @@ public class LocationCB extends ComboBox<Location> {
 		if (isEnabled()) { setValue(location); }
 	}
 
-	/**
-	 * 如果傳入的 type 為 {@link LocationType#unborn}，則會變成 disable 狀態。
-	 * 選單內容會過濾、只剩下與傳入 type 相符的資料，
-	 * 且一律將 value 設為 null。
-	 */
 	public void setType(LocationType type) {
-		boolean result = type == LocationType.unborn;
-		setEnabled(!result);
 		setValue(null);
-
-		if (result) { return; }
-
-		//只有地圖 type 才要做（不然早就 disable 掉啦）
 		filter.setType(type);
 		getStore().setEnableFilters(false);
 		getStore().setEnableFilters(true);
