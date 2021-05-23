@@ -24,7 +24,7 @@ public class StringUtil {
 	}
 
 	public static String size(Crate crate) {
-		return crate.getLength() + " x " + crate.getWidth() + " x " + crate.getHeight();
+		return crate.getLength() + " x " + crate.getWidth() + " (H)" + crate.getHeight();
 	}
 
 	public static String toString(LocationType type) {
