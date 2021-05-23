@@ -7,21 +7,33 @@ import java.util.List;
 import com.sencha.gxt.chart.client.draw.RGB;
 import com.sencha.gxt.chart.client.draw.sprite.SpriteSelectionEvent;
 import com.sencha.gxt.chart.client.draw.sprite.SpriteSelectionEvent.SpriteSelectionHandler;
+import com.sencha.gxt.core.shared.event.GroupingHandlerRegistration;
 
 import us.dontcareabout.gxt.client.draw.LayerContainer;
 import us.dontcareabout.gxt.client.draw.LayerSprite;
 import us.dontcareabout.gxt.client.draw.component.TextButton;
+import us.dontcareabout.kkfan.client.data.CrateReadyEvent;
+import us.dontcareabout.kkfan.client.data.CrateReadyEvent.CrateReadyHandler;
+import us.dontcareabout.kkfan.client.data.LocationReadyEvent;
+import us.dontcareabout.kkfan.client.data.LocationReadyEvent.LocationReadyHandler;
+import us.dontcareabout.kkfan.client.data.gf.Logistics;
 import us.dontcareabout.kkfan.client.layer.LocationLayer;
 import us.dontcareabout.kkfan.client.util.StringUtil;
 import us.dontcareabout.kkfan.shared.vo.Crate;
 import us.dontcareabout.kkfan.shared.vo.Location;
 
 public class FloorPlan extends LayerContainer {
+	//因為 crate 原則上最小是 50x50，這樣可以確保最小的 crate 在螢幕上有 10x10 的大小
+	private static final double ratioMin = 0.2;
+
 	private double ratio = 0.25;
 
 	private List<LocationLayer> locLayerList = new ArrayList<>();
 	private LayerSprite bg = new LayerSprite();
 	private InfoLayer infoLayer = new InfoLayer();
+
+	private Integer floor = 1;
+	private GroupingHandlerRegistration hrGroup = new GroupingHandlerRegistration();
 
 	public FloorPlan() {
 		bg.setBgColor(RGB.BLACK);
@@ -31,38 +43,70 @@ public class FloorPlan extends LayerContainer {
 		addLayer(infoLayer);
 	}
 
-	public void refresh(int floor, List<Location> locations) {
+	@Override
+	protected void onLoad() {
+		super.onLoad();
+		hrGroup.add(
+			Logistics.addHandler("crate", new CrateReadyHandler() {
+				@Override
+				public void onCrateReady(CrateReadyEvent event) {
+					refresh();
+				}
+			})
+		);
+		hrGroup.add(
+			Logistics.addHandler("location", new LocationReadyHandler() {
+				@Override
+				public void onLocationReady(LocationReadyEvent event) {
+					Logistics.want("crate");
+				}
+			})
+		);
+		Logistics.want("location");
+	}
+
+	@Override
+	protected void onUnload() {
+		hrGroup.removeHandler();
+		super.onUnload();
+	}
+
+	private void refresh() {
 		infoLayer.setFloor(floor);
 
+		//==== 處理 location ====//
 		for (LocationLayer locLayer : locLayerList) {
 			locLayer.undeploy();
 		}
 
 		locLayerList.clear();
 
+		List<Location> locations = Logistics.getData("location");
 		for (Location location : locations) {
-			if (location.getFloor() == floor) {
+			if (floor.equals(location.getFloor())) {
 				LocationLayer locLayer = new LocationLayer(location);
 				locLayerList.add(locLayer);
 				addLayer(locLayer);
 			}
 		}
 
+		//在這邊就要做 adjustMember() 不然 LocationLayer 沒大小可以讓後頭計算
 		adjustMember(getOffsetWidth(), getOffsetHeight());
-	}
+		//========//
 
-	public void refresh(List<Crate> crates) {
-		HashMap<LocationLayer, List<Crate>> map = new HashMap<>();
+		//==== 處理 crate ====//
+		List<Crate> crates = Logistics.getData("crate");
+		HashMap<LocationLayer, List<Crate>> locateCrate = new HashMap<>();
 
 		for (Crate crate : crates) {
 			for (LocationLayer locLayer : locLayerList) {
 				if (!crate.getLocation().equals(locLayer.location)) { continue; }
 
-				List<Crate> list = map.get(locLayer);
+				List<Crate> list = locateCrate.get(locLayer);
 
 				if (list == null) {
 					list = new ArrayList<>();
-					map.put(locLayer, list);
+					locateCrate.put(locLayer, list);
 				}
 
 				list.add(crate);
@@ -70,9 +114,12 @@ public class FloorPlan extends LayerContainer {
 			}
 		}
 
-		for (LocationLayer locLayer : map.keySet()) {
-			locLayer.takeOver(map.get(locLayer));
+		for (LocationLayer locLayer : locateCrate.keySet()) {
+			locLayer.takeOver(locateCrate.get(locLayer));
 		}
+		//========//
+
+		redrawSurface();
 	}
 
 	@Override
@@ -150,7 +197,9 @@ public class FloorPlan extends LayerContainer {
 				addSpriteSelectionHandler(new SpriteSelectionHandler() {
 					@Override
 					public void onSpriteSelect(SpriteSelectionEvent event) {
-						setRatio(ratio + 0.01 * (isPlus ? 1 : -1));
+						double newRatio = ratio + 0.01 * (isPlus ? 1 : -1);
+						minusTB.setHidden(newRatio <= ratioMin);
+						setRatio(newRatio);
 					}
 				});
 			}
