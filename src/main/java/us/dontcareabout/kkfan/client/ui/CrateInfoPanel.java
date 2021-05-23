@@ -14,6 +14,7 @@ import com.sencha.gxt.widget.core.client.toolbar.LabelToolItem;
 import us.dontcareabout.kkfan.client.component.LocationCB;
 import us.dontcareabout.kkfan.client.component.LocationTypeCB;
 import us.dontcareabout.kkfan.client.component.gf.RwdRootPanel;
+import us.dontcareabout.kkfan.client.data.DataCenter;
 import us.dontcareabout.kkfan.client.data.LocationReadyEvent;
 import us.dontcareabout.kkfan.client.data.LocationReadyEvent.LocationReadyHandler;
 import us.dontcareabout.kkfan.client.data.gf.Logistics;
@@ -34,6 +35,8 @@ public class CrateInfoPanel extends Composite {
 	@UiField TextArea item;
 	@UiField TextArea note;
 
+	private Crate crate;
+
 	public CrateInfoPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -52,6 +55,7 @@ public class CrateInfoPanel extends Composite {
 	}
 
 	public void refresh(Crate crate) {
+		this.crate = crate;
 		size.setLabel(StringUtil.size(crate));
 		locationType.setValue(crate.getLocation().getType());
 		location.setLocation(crate.getLocation());
@@ -71,6 +75,10 @@ public class CrateInfoPanel extends Composite {
 
 	@UiHandler("submit")
 	void submitSelect(SelectEvent se) {
-		//TODO
+		crate.setLocation(location.getValue());
+		crate.setItem(item.getValue());
+		crate.setNote(note.getValue());
+		DataCenter.save(crate.clean());
+		RwdRootPanel.closeDialog();
 	}
 }
