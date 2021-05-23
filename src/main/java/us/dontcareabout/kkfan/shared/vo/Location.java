@@ -1,5 +1,7 @@
 package us.dontcareabout.kkfan.shared.vo;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -84,5 +86,22 @@ public class Location implements HasId<Long> {
 		floor = null;
 		polygon = null;
 		return this;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) {
+			return true;
+		}
+		if(!(obj instanceof Location)) {
+			return false;
+		}
+		Location other = (Location)obj;
+		return Objects.equals(id, other.id);
 	}
 }
