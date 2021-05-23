@@ -22,6 +22,7 @@ import com.sencha.gxt.widget.core.client.grid.RowExpander;
 import us.dontcareabout.gxt.client.component.Grid2;
 import us.dontcareabout.gxt.client.model.GetValueProvider;
 import us.dontcareabout.kkfan.client.util.ColorUtil;
+import us.dontcareabout.kkfan.client.util.StringUtil;
 import us.dontcareabout.kkfan.client.util.gf.ColumnConfigBuilder;
 import us.dontcareabout.kkfan.shared.vo.Crate;
 import us.dontcareabout.kkfan.shared.vo.Location;
@@ -101,7 +102,7 @@ public class CrateGrid extends Grid2<Crate> {
 			new ColumnConfigBuilder<Crate, String>(new GetValueProvider<Crate, String>() {
 				@Override
 				public String getValue(Crate object) {
-					return object.getLength() + " x " + object.getWidth() + " H" + object.getHeight();
+					return StringUtil.size(object);
 				}
 			}).setWidth(10).setHeader("尺寸").build()
 		);
