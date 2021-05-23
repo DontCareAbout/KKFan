@@ -115,21 +115,22 @@ public class LocationLayer extends LayerSprite {
 		Collections.sort(cbList);
 
 		final double xStart = 10;
+		final double gap = 4;
 		double x = xStart;
 		double y = 10;
 		double maxH = cbList.get(0).getHeight();
 
 		for (CrateBlock cb : cbList) {
-			if (x + cb.getWidth() > getWidth()) {
+			if (x + cb.getWidth() + gap > getWidth()) {
 				x = xStart;
-				y += maxH;
+				y += maxH + gap;
 				maxH = 0;
 			}
 
 			cb.setLX(x);
 			cb.setLY(y);
 
-			x += cb.getWidth();
+			x += cb.getWidth() + gap;
 			if (maxH < cb.getHeight()) { maxH = cb.getHeight(); }
 		}
 	}
