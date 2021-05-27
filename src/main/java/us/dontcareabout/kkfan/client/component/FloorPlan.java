@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.gwt.user.client.Event;
 import com.sencha.gxt.chart.client.draw.RGB;
 import com.sencha.gxt.chart.client.draw.sprite.SpriteSelectionEvent;
 import com.sencha.gxt.chart.client.draw.sprite.SpriteSelectionEvent.SpriteSelectionHandler;
@@ -36,11 +37,23 @@ public class FloorPlan extends LayerContainer {
 	private GroupingHandlerRegistration hrGroup = new GroupingHandlerRegistration();
 
 	public FloorPlan() {
+		sinkEvents(Event.ONMOUSEWHEEL);
+
 		bg.setBgColor(RGB.BLACK);
 		bg.setLX(0);
 		bg.setLY(0);
 		addLayer(bg);
 		addLayer(infoLayer);
+	}
+
+	@Override
+	public void onBrowserEvent(Event event) {
+		super.onBrowserEvent(event);
+
+		if (event.getTypeInt() == Event.ONMOUSEWHEEL) {
+			doWheel(event);
+			return;
+		}
 	}
 
 	@Override
@@ -148,6 +161,23 @@ public class FloorPlan extends LayerContainer {
 		adjustMember(getOffsetWidth(), getOffsetHeight());
 	}
 
+	private void scale(boolean isPlus) {
+		//滾輪縮放才會需要阻擋一直縮小下去，按按鈕不會發生
+		if (!isPlus && ratio <= ratioMin) { return; }
+
+		double newRatio = ratio + 0.01 * (isPlus ? 1 : -1);
+		infoLayer.minusTB.setHidden(newRatio <= ratioMin);
+		setRatio(newRatio);
+	}
+
+	private void doWheel(Event event) {
+		//這邊是採用 Google Map 的操作，往下滾（velocity > 0）是縮小
+		scale(event.getMouseWheelVelocityY() < 0);
+
+		//滾輪才需要，按鈕是在 LayerContainer 的 event 機制就呼叫了
+		redrawSurface();
+	}
+
 	private class InfoLayer extends LayerSprite {
 		static final int gap = 5;
 		static final int btnSize = 26;
@@ -197,9 +227,7 @@ public class FloorPlan extends LayerContainer {
 				addSpriteSelectionHandler(new SpriteSelectionHandler() {
 					@Override
 					public void onSpriteSelect(SpriteSelectionEvent event) {
-						double newRatio = ratio + 0.01 * (isPlus ? 1 : -1);
-						minusTB.setHidden(newRatio <= ratioMin);
-						setRatio(newRatio);
+						scale(isPlus);
 					}
 				});
 			}
