@@ -43,7 +43,7 @@ public class LocationLayer extends LayerSprite {
 	 *
 	 * 不使用 event-driven 的方式傳值，是考慮到 {@link FloorPlan} 切換樓層時可能會造成不必要的混亂。
 	 */
-	private double ratio;
+	private double ratio = 1;
 
 	private TextButton bgNameTB = new TextButton();
 	private List<CrateBlock> cbList = new ArrayList<>();
@@ -54,6 +54,9 @@ public class LocationLayer extends LayerSprite {
 		Polygon poly = Polygon.valueOf(location.getPolygon());
 		this.left = new XY(poly.getLeft().x, poly.getTop().y);
 		this.bottom = new XY(poly.getRight().x, poly.getBottom().y);
+
+		setLX(left.x);
+		setLY(left.y);
 
 		RGB color = ColorUtil.get(location.getType());
 		Color complementary = ColorUtil.blackOrWhite(color);
