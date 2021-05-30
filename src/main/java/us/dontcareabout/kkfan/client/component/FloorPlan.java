@@ -53,6 +53,10 @@ public class FloorPlan extends LayerContainer {
 		addLayer(infoLayer);
 	}
 
+	public void setFloor(int floor) {
+		this.floor = floor;
+	}
+
 	@Override
 	public void onBrowserEvent(Event event) {
 		super.onBrowserEvent(event);
@@ -260,5 +264,4 @@ public class FloorPlan extends LayerContainer {
 			}
 		}
 	}
-
 }
