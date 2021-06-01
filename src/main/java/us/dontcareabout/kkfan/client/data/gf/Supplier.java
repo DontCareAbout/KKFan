@@ -4,20 +4,16 @@ import java.util.Date;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.GwtEvent.Type;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.SimpleEventBus;
 
-public abstract class Supplier<D, H extends EventHandler> {
+public abstract class Supplier<D> {
+	private SimpleEventBus eventBus = new SimpleEventBus();
 	private boolean fetchLock;
 	private D data;
 	private Date expire;
 
 	public abstract String name();
-	public abstract Type<H> eventType();
-
-	//TODO 考慮改成自訂 event type，可以夾帶 expire 好讓 handler 可以決定要不要處理
-	public abstract GwtEvent<H> genEvent();
 
 	/**
 	 * 抓取資料的實做 method。在資料抓取完畢後請呼叫 {@link #ready(Object)}。
@@ -29,6 +25,10 @@ public abstract class Supplier<D, H extends EventHandler> {
 	 * @see #latterDate(int)
 	 */
 	public abstract Date nextExpire();
+
+	public HandlerRegistration addHandler(LogisticsHandler handler) {
+		return eventBus.addHandler(LogisticsEvent.TYPE, handler);
+	}
 
 	/**
 	 * 判斷是否能提供所需資料，
@@ -78,7 +78,7 @@ public abstract class Supplier<D, H extends EventHandler> {
 		Scheduler.get().scheduleFinally(new ScheduledCommand() {
 			@Override
 			public void execute() {
-				Logistics.fireEvent(genEvent());
+				eventBus.fireEvent(new LogisticsEvent(expire));
 			}
 		});
 	}
