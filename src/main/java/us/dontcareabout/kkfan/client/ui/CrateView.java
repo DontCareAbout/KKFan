@@ -11,9 +11,9 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 
 import us.dontcareabout.kkfan.client.component.CrateEditor;
 import us.dontcareabout.kkfan.client.component.CrateGrid;
-import us.dontcareabout.kkfan.client.data.CrateReadyEvent;
-import us.dontcareabout.kkfan.client.data.CrateReadyEvent.CrateReadyHandler;
 import us.dontcareabout.kkfan.client.data.gf.Logistics;
+import us.dontcareabout.kkfan.client.data.gf.LogisticsEvent;
+import us.dontcareabout.kkfan.client.data.gf.LogisticsHandler;
 import us.dontcareabout.kkfan.client.util.StringUtil;
 import us.dontcareabout.kkfan.shared.vo.Crate;
 
@@ -26,9 +26,9 @@ public class CrateView extends Composite {
 	public CrateView() {
 		initWidget(uiBinder.createAndBindUi(this));
 
-		Logistics.addHandler("crate", new CrateReadyHandler() {
+		Logistics.addHandler("crate", new LogisticsHandler() {
 			@Override
-			public void onCrateReady(CrateReadyEvent event) {
+			public void onReady(LogisticsEvent event) {
 				grid.refresh(Logistics.getData("crate"));
 				editor.mask(StringUtil.SELECT_OR_NEW);
 			}

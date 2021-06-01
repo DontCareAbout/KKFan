@@ -14,11 +14,9 @@ import com.sencha.gxt.core.shared.event.GroupingHandlerRegistration;
 import us.dontcareabout.gxt.client.draw.LayerContainer;
 import us.dontcareabout.gxt.client.draw.LayerSprite;
 import us.dontcareabout.gxt.client.draw.component.TextButton;
-import us.dontcareabout.kkfan.client.data.CrateReadyEvent;
-import us.dontcareabout.kkfan.client.data.CrateReadyEvent.CrateReadyHandler;
-import us.dontcareabout.kkfan.client.data.LocationReadyEvent;
-import us.dontcareabout.kkfan.client.data.LocationReadyEvent.LocationReadyHandler;
 import us.dontcareabout.kkfan.client.data.gf.Logistics;
+import us.dontcareabout.kkfan.client.data.gf.LogisticsEvent;
+import us.dontcareabout.kkfan.client.data.gf.LogisticsHandler;
 import us.dontcareabout.kkfan.client.layer.LocationLayer;
 import us.dontcareabout.kkfan.client.util.StringUtil;
 import us.dontcareabout.kkfan.client.util.gf.EventUtil;
@@ -75,17 +73,17 @@ public class FloorPlan extends LayerContainer {
 		resetParam();
 
 		hrGroup.add(
-			Logistics.addHandler("crate", new CrateReadyHandler() {
+			Logistics.addHandler("crate", new LogisticsHandler() {
 				@Override
-				public void onCrateReady(CrateReadyEvent event) {
+				public void onReady(LogisticsEvent event) {
 					refresh();
 				}
 			})
 		);
 		hrGroup.add(
-			Logistics.addHandler("location", new LocationReadyHandler() {
+			Logistics.addHandler("location", new LogisticsHandler() {
 				@Override
-				public void onLocationReady(LocationReadyEvent event) {
+				public void onReady(LogisticsEvent event) {
 					Logistics.want("crate");
 				}
 			})

@@ -17,9 +17,9 @@ import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TextField;
 
 import us.dontcareabout.kkfan.client.data.DataCenter;
-import us.dontcareabout.kkfan.client.data.LocationReadyEvent;
-import us.dontcareabout.kkfan.client.data.LocationReadyEvent.LocationReadyHandler;
 import us.dontcareabout.kkfan.client.data.gf.Logistics;
+import us.dontcareabout.kkfan.client.data.gf.LogisticsEvent;
+import us.dontcareabout.kkfan.client.data.gf.LogisticsHandler;
 import us.dontcareabout.kkfan.client.util.StringUtil;
 import us.dontcareabout.kkfan.shared.vo.Crate;
 import us.dontcareabout.kkfan.shared.vo.LocationType;
@@ -48,9 +48,9 @@ public class CrateEditor extends Composite implements Editor<Crate> {
 		initWidget(uiBinder.createAndBindUi(this));
 		driver.initialize(this);
 
-		Logistics.addHandler("location", new LocationReadyHandler() {
+		Logistics.addHandler("location", new LogisticsHandler() {
 			@Override
-			public void onLocationReady(LocationReadyEvent event) {
+			public void onReady(LogisticsEvent event) {
 				location.fillData(Logistics.getData("location"));
 			}
 		});

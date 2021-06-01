@@ -3,10 +3,6 @@ package us.dontcareabout.kkfan.client.data;
 import java.util.Date;
 import java.util.List;
 
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.GwtEvent.Type;
-
-import us.dontcareabout.kkfan.client.data.CrateReadyEvent.CrateReadyHandler;
 import us.dontcareabout.kkfan.client.data.gf.Callback;
 import us.dontcareabout.kkfan.client.data.gf.Logistics;
 import us.dontcareabout.kkfan.client.data.gf.Supplier;
@@ -16,21 +12,11 @@ import us.dontcareabout.kkfan.shared.vo.Location;
 /**
  * {@link Logistics} 的 {@link Location} 資料必須在 {@link #fetch()} 之前 ready。 
  */
-public class CrateSupplier extends Supplier<List<Crate>, CrateReadyHandler> {
+public class CrateSupplier extends Supplier<List<Crate>> {
 
 	@Override
 	public String name() {
 		return "crate";
-	}
-
-	@Override
-	public Type<CrateReadyHandler> eventType() {
-		return CrateReadyEvent.TYPE;
-	}
-
-	@Override
-	public GwtEvent<CrateReadyHandler> genEvent() {
-		return new CrateReadyEvent();
 	}
 
 	@Override

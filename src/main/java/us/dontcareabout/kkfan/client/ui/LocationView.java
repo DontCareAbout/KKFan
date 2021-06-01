@@ -11,9 +11,9 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 
 import us.dontcareabout.kkfan.client.component.LocationEditor;
 import us.dontcareabout.kkfan.client.component.LocationGrid;
-import us.dontcareabout.kkfan.client.data.LocationReadyEvent;
-import us.dontcareabout.kkfan.client.data.LocationReadyEvent.LocationReadyHandler;
 import us.dontcareabout.kkfan.client.data.gf.Logistics;
+import us.dontcareabout.kkfan.client.data.gf.LogisticsEvent;
+import us.dontcareabout.kkfan.client.data.gf.LogisticsHandler;
 import us.dontcareabout.kkfan.client.util.StringUtil;
 import us.dontcareabout.kkfan.shared.vo.Location;
 
@@ -27,9 +27,9 @@ public class LocationView extends Composite {
 	public LocationView() {
 		initWidget(uiBinder.createAndBindUi(this));
 
-		Logistics.addHandler("location", new LocationReadyHandler() {
+		Logistics.addHandler("location", new LogisticsHandler() {
 			@Override
-			public void onLocationReady(LocationReadyEvent event) {
+			public void onReady(LogisticsEvent event) {
 				grid.refresh(Logistics.getData("location"));
 				editor.mask(StringUtil.SELECT_OR_NEW);
 			}
