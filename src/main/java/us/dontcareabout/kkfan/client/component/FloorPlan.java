@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
 import com.sencha.gxt.chart.client.draw.RGB;
 import com.sencha.gxt.chart.client.draw.sprite.SpriteSelectionEvent;
@@ -27,6 +28,8 @@ public class FloorPlan extends LayerContainer {
 	//因為 crate 原則上最小是 50x50，這樣可以確保最小的 crate 在螢幕上有 10x10 的大小
 	private static final double ratioMin = 0.2;
 
+	private static final double shiftDistance = 50;
+
 	//param 區，預設值參見 resetParam()
 	private double preRatio;
 	private double ratio;
@@ -42,13 +45,15 @@ public class FloorPlan extends LayerContainer {
 	private GroupingHandlerRegistration hrGroup = new GroupingHandlerRegistration();
 
 	public FloorPlan() {
-		sinkEvents(Event.ONMOUSEWHEEL);
-
+		sinkEvents(Event.ONMOUSEWHEEL | Event.ONKEYDOWN);
 		bg.setBgColor(RGB.BLACK);
 		bg.setLX(0);
 		bg.setLY(0);
 		addLayer(bg);
 		addLayer(infoLayer);
+
+		//為了能收到 key event 的黑魔法... O.o （ref: GXT Menu）
+		getElement().setTabIndex(0);
 	}
 
 	public void setFloor(int floor) {
@@ -61,6 +66,11 @@ public class FloorPlan extends LayerContainer {
 
 		if (event.getTypeInt() == Event.ONMOUSEWHEEL) {
 			doWheel(event);
+			return;
+		}
+
+		if (event.getTypeInt() == Event.ONKEYDOWN) {
+			doKeyin(event);
 			return;
 		}
 	}
@@ -170,6 +180,9 @@ public class FloorPlan extends LayerContainer {
 				Math.abs(room.left.y - room.bottom.y) * ratio
 			);
 		}
+
+		offsetX = 0;
+		offsetY = 0;
 	}
 
 	private void resetParam() {
@@ -204,6 +217,33 @@ public class FloorPlan extends LayerContainer {
 		scale(event.getMouseWheelVelocityY() < 0, point.getX(), point.getY());
 
 		//滾輪才需要，按鈕是在 LayerContainer 的 event 機制就呼叫了
+		redrawSurface();
+	}
+
+	private void doKeyin(Event event) {
+		switch(event.getKeyCode()) {
+		case KeyCodes.KEY_LEFT:
+			shiftX(-shiftDistance); break;
+		case KeyCodes.KEY_RIGHT:
+			shiftX(shiftDistance); break;
+		case KeyCodes.KEY_UP:
+			shiftY(-shiftDistance); break;
+		case KeyCodes.KEY_DOWN:
+			shiftY(shiftDistance); break;
+		}
+	}
+
+	private void shiftX(double offset) {
+		offsetX = offset;
+		offsetY = 0;
+		adjustMember(getOffsetWidth(), getOffsetHeight());
+		redrawSurface();
+	}
+
+	private void shiftY(double offset) {
+		offsetX = 0;
+		offsetY = offset;
+		adjustMember(getOffsetWidth(), getOffsetHeight());
 		redrawSurface();
 	}
 
