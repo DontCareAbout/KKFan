@@ -223,13 +223,13 @@ public class FloorPlan extends LayerContainer {
 	private void doKeyin(Event event) {
 		switch(event.getKeyCode()) {
 		case KeyCodes.KEY_LEFT:
-			shiftX(-shiftDistance); break;
+			shiftX(shiftDistance); return;
 		case KeyCodes.KEY_RIGHT:
-			shiftX(shiftDistance); break;
+			shiftX(-shiftDistance); return;
 		case KeyCodes.KEY_UP:
-			shiftY(-shiftDistance); break;
+			shiftY(shiftDistance); return;
 		case KeyCodes.KEY_DOWN:
-			shiftY(shiftDistance); break;
+			shiftY(-shiftDistance); return;
 		}
 	}
 
