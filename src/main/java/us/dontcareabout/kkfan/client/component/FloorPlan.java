@@ -35,6 +35,9 @@ public class FloorPlan extends LayerContainer {
 	private double ratio;
 	private double offsetX;
 	private double offsetY;
+	/** 操作累積的總位移量 */
+	private double totalOffsetX;
+	private double totalOffsetY;
 	////
 
 	private List<LocationLayer> locLayerList = new ArrayList<>();
@@ -126,6 +129,9 @@ public class FloorPlan extends LayerContainer {
 			}
 		}
 
+		preRatio = 1;
+		offsetX = totalOffsetX;
+		offsetY = totalOffsetY;
 		//在這邊就要做 adjustMember() 不然 LocationLayer 沒大小可以讓後頭計算
 		adjustMember(getOffsetWidth(), getOffsetHeight());
 		//為了撰寫方便起見，一開始就會做一次比例尺從 1 到 ratio 的動作
@@ -173,8 +179,8 @@ public class FloorPlan extends LayerContainer {
 
 		//以下是浮動區
 		for (LocationLayer room : locLayerList) {
-			room.setLX(room.getLX() / preRatio * ratio + offsetX);
-			room.setLY(room.getLY() / preRatio * ratio + offsetY);
+			room.setLX(correct(room.getLX(), offsetX));
+			room.setLY(correct(room.getLY(), offsetY));
 			room.resize(
 				Math.abs(room.left.x - room.bottom.x) * ratio,
 				Math.abs(room.left.y - room.bottom.y) * ratio
@@ -190,6 +196,8 @@ public class FloorPlan extends LayerContainer {
 		ratio = 0.25;
 		offsetX = 0;
 		offsetY = 0;
+		totalOffsetX = 0;
+		totalOffsetY = 0;
 	}
 
 	private void scale(boolean isPlus) {
@@ -205,9 +213,16 @@ public class FloorPlan extends LayerContainer {
 		ratio = preRatio + 0.01 * (isPlus ? 1 : -1);
 		offsetX = eventX * (1 - ratio / preRatio);
 		offsetY = eventY * (1 - ratio / preRatio);
+		totalOffsetX = correct(totalOffsetX, offsetX);
+		totalOffsetY = correct(totalOffsetY, offsetY);
 		infoLayer.minusTB.setHidden(ratio <= ratioMin);
 		adjustMember(getOffsetWidth(), getOffsetHeight());
 		preRatio = ratio;
+	}
+
+	//嚴格來講不是修正，只是不知道該怎麼取名，反正 private method... [逃]
+	private double correct(double value, double offset) {
+		return value / preRatio * ratio + offset;
 	}
 
 	private void doWheel(Event event) {
@@ -236,6 +251,7 @@ public class FloorPlan extends LayerContainer {
 	private void shiftX(double offset) {
 		offsetX = offset;
 		offsetY = 0;
+		totalOffsetX += offsetX;
 		adjustMember(getOffsetWidth(), getOffsetHeight());
 		redrawSurface();
 	}
@@ -243,6 +259,7 @@ public class FloorPlan extends LayerContainer {
 	private void shiftY(double offset) {
 		offsetX = 0;
 		offsetY = offset;
+		totalOffsetY += offsetY;
 		adjustMember(getOffsetWidth(), getOffsetHeight());
 		redrawSurface();
 	}
