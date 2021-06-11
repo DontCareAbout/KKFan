@@ -54,6 +54,12 @@ public class CrateInfoPanel extends Composite {
 		Logistics.want("location");
 	}
 
+	@Override
+	protected void onUnload() {
+		super.onUnload();
+		UiCenter.crateInfoClose();
+	}
+
 	public void refresh(Crate crate) {
 		this.crate = crate;
 		size.setLabel(StringUtil.size(crate));
