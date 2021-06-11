@@ -19,6 +19,9 @@ import us.dontcareabout.kkfan.client.data.gf.Logistics;
 import us.dontcareabout.kkfan.client.data.gf.LogisticsEvent;
 import us.dontcareabout.kkfan.client.data.gf.LogisticsHandler;
 import us.dontcareabout.kkfan.client.layer.LocationLayer;
+import us.dontcareabout.kkfan.client.ui.UiCenter;
+import us.dontcareabout.kkfan.client.ui.event.CrateInfoCloseEvent;
+import us.dontcareabout.kkfan.client.ui.event.CrateInfoCloseEvent.CrateInfoCloseHandler;
 import us.dontcareabout.kkfan.client.util.StringUtil;
 import us.dontcareabout.kkfan.client.util.gf.EventUtil;
 import us.dontcareabout.kkfan.shared.vo.Crate;
@@ -57,6 +60,13 @@ public class FloorPlan extends LayerContainer {
 
 		//為了能收到 key event 的黑魔法... O.o （ref: GXT Menu）
 		getElement().setTabIndex(0);
+
+		UiCenter.addCrateInfoClose(new CrateInfoCloseHandler() {
+			@Override
+			public void onCrateInfoClose(CrateInfoCloseEvent event) {
+				getElement().focus();
+			}
+		});
 	}
 
 	public void setFloor(int floor) {
@@ -102,6 +112,7 @@ public class FloorPlan extends LayerContainer {
 			})
 		);
 		Logistics.want("location");
+		getElement().focus();
 	}
 
 	@Override
