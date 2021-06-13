@@ -30,6 +30,8 @@ import us.dontcareabout.kkfan.shared.vo.Location;
 public class CrateGrid extends Grid2<Crate> {
 	private static final Properties properties = GWT.create(Properties.class);
 
+	private final boolean simpleMode;
+
 	private RowExpander<Crate> rowExpander = new RowExpander<>(
 		new AbstractCell<Crate>() {
 			@Override
@@ -40,6 +42,12 @@ public class CrateGrid extends Grid2<Crate> {
 	);
 
 	public CrateGrid() {
+		this(false);
+	}
+
+	public CrateGrid(boolean simpleMode) {
+		this.simpleMode = simpleMode;
+
 		init();
 		rowExpander.initPlugin(this);
 		getView().setAutoFill(true);
@@ -94,10 +102,14 @@ public class CrateGrid extends Grid2<Crate> {
 			new ColumnConfigBuilder<Crate, Crate>(new IdentityValueProvider<>())
 				.setWidth(8).setHeader("編號").setCell(serial).setCellPedding(false).build()
 		);
-		list.add(
-			new ColumnConfigBuilder<Crate, Location>(properties.location())
-				.setWidth(8).setHeader("位置").setCell(location).setCellPedding(false).build()
-		);
+
+		if (!simpleMode) {
+			list.add(
+				new ColumnConfigBuilder<Crate, Location>(properties.location())
+					.setWidth(8).setHeader("位置").setCell(location).setCellPedding(false).build()
+			);
+		}
+
 		list.add(
 			new ColumnConfigBuilder<Crate, String>(new GetValueProvider<Crate, String>() {
 				@Override
@@ -106,6 +118,9 @@ public class CrateGrid extends Grid2<Crate> {
 				}
 			}).setWidth(10).setHeader("尺寸").build()
 		);
+
+		if (simpleMode) { return new ColumnModel<>(list); }
+
 		list.add(
 			new ColumnConfigBuilder<Crate, String>(properties.mfr())
 				.setWidth(10).setHeader("製造商").build()
