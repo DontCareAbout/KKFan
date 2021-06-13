@@ -38,6 +38,7 @@ public class LocationLayer extends LayerSprite {
 	 * 注意：這個值必須大於 {@value FloorPlan#ratioMin}，否則沒有意義。
 	 */
 	public static final double ratioCrateMin = 0.2;
+	public static final int amountHeight = 26;
 
 	private static final CrateInfoPanel crateInfo = new CrateInfoPanel();
 
@@ -55,6 +56,7 @@ public class LocationLayer extends LayerSprite {
 	private double ratio = 1;
 
 	private TextButton bgNameTB = new TextButton();
+	private TextButton crateAmountTB = new TextButton();
 	private List<CrateBlock> cbList = new ArrayList<>();
 
 	public LocationLayer(Location location) {
@@ -76,6 +78,15 @@ public class LocationLayer extends LayerSprite {
 		bgNameTB.setTextColor(complementary);
 		bgNameTB.setTextOpacity(0.3);
 		add(bgNameTB);
+
+		crateAmountTB.setBgColor(complementary);
+		crateAmountTB.setBgStrokeColor(complementary);
+		crateAmountTB.setBgStrokeWidth(3);
+		//text 在 adjustMember() 裡頭設定
+		crateAmountTB.setTextColor(color);
+		crateAmountTB.setMargin(2);
+		crateAmountTB.setHidden(true);
+		add(crateAmountTB);
 	}
 
 	public void takeOver(Crate crate) {
@@ -95,7 +106,7 @@ public class LocationLayer extends LayerSprite {
 	@Override
 	protected void adjustMember() {
 		double newRatio = getWidth() / Math.abs(left.x - bottom.x);
-		boolean hidden = newRatio < ratioCrateMin;
+		boolean hidden = newRatio < ratioCrateMin && !cbList.isEmpty();
 
 		for (CrateBlock cb : cbList) {
 			cb.setHidden(hidden);
@@ -103,9 +114,16 @@ public class LocationLayer extends LayerSprite {
 
 		bgNameTB.setLX(0);
 		bgNameTB.setLY(0);
-		bgNameTB.resize(getWidth(), getHeight());
+		bgNameTB.resize(getWidth(), hidden ? getHeight() - amountHeight : getHeight());
+		crateAmountTB.setHidden(!hidden);
 
-		if (hidden) { return; }
+		if (hidden) {
+			crateAmountTB.setLX(0);
+			crateAmountTB.setLY(getHeight() - amountHeight);
+			crateAmountTB.resize(getWidth(), amountHeight);
+			crateAmountTB.setText("+" + cbList.size());
+			return;
+		}
 
 		double ratioChange = newRatio / ratio;
 
