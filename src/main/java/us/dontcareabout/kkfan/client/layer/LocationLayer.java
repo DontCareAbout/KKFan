@@ -30,6 +30,15 @@ import us.dontcareabout.kkfan.shared.vo.Location;
  * TODO 目前只能一律視為矩形處理，等待 GF 的 LPathSprite... [遠目]
  */
 public class LocationLayer extends LayerSprite {
+	/**
+	 * 可以看見箱子的最小比例。
+	 * <p>
+	 * 因為 crate 原則上最小是 50x50，這樣可以確保最小的 crate 在螢幕上有 10x10 的大小
+	 * <p>
+	 * 注意：這個值必須大於 {@value FloorPlan#ratioMin}，否則沒有意義。
+	 */
+	public static final double ratioCrateMin = 0.2;
+
 	private static final CrateInfoPanel crateInfo = new CrateInfoPanel();
 
 	public final Location location;
@@ -86,6 +95,18 @@ public class LocationLayer extends LayerSprite {
 	@Override
 	protected void adjustMember() {
 		double newRatio = getWidth() / Math.abs(left.x - bottom.x);
+		boolean hidden = newRatio < ratioCrateMin;
+
+		for (CrateBlock cb : cbList) {
+			cb.setHidden(hidden);
+		}
+
+		bgNameTB.setLX(0);
+		bgNameTB.setLY(0);
+		bgNameTB.resize(getWidth(), getHeight());
+
+		if (hidden) { return; }
+
 		double ratioChange = newRatio / ratio;
 
 		for (CrateBlock cb : cbList) {
@@ -95,10 +116,6 @@ public class LocationLayer extends LayerSprite {
 		}
 
 		ratio = newRatio;
-
-		bgNameTB.setLX(0);
-		bgNameTB.setLY(0);
-		bgNameTB.resize(getWidth(), getHeight());
 	}
 
 	/** 注意：沒有處理位置的邏輯，那歸 {@link #lineUp()} 處理 */
