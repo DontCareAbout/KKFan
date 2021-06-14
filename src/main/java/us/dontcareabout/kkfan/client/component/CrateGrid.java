@@ -36,7 +36,7 @@ public class CrateGrid extends Grid2<Crate> {
 		new AbstractCell<Crate>() {
 			@Override
 			public void render(Context context, Crate value, SafeHtmlBuilder sb) {
-				sb.append(tplt.crateGridExpand(value));
+				sb.append(tplt.crateGridExpand(value, simpleMode));
 			}
 		}
 	);

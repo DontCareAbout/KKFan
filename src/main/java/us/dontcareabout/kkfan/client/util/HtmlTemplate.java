@@ -10,7 +10,7 @@ public interface HtmlTemplate extends XTemplates {
 	static HtmlTemplate tplt = GWT.create(HtmlTemplate.class);
 
 	@XTemplate(source = "CrateGridExpand.html")
-	SafeHtml crateGridExpand(Crate crate);
+	SafeHtml crateGridExpand(Crate crate, boolean isSimpleMode);
 
 	@XTemplate(source = "CrateGridName.html")
 	SafeHtml crateGridName(String name, String textColor, String bgColor);

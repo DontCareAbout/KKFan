@@ -1,18 +1,32 @@
-<table style="width:100%;margin:5px 0 5px 5px">
-	<tr>
-		<th style="width:50%;font-size:12px;">內容：</th>
-		<th style="width:50%;font-size:12px;">備註：</th>
-	</tr>
-	<tr>
-		<td style="vertical-align:top;">
-			<tpl if="item != null">
-			<pre style='margin:3px 3px 3px 20px;white-space:pre-wrap;'>{item}</pre>
-			</tpl>
-		</td>
-		<td style="vertical-align:top;">
-			<tpl if="note != null">
-			<pre style='margin:3px 3px 3px 20px;white-space:pre-wrap;'>{note}</pre>
-			</tpl>
-		</td>
-	</tr>
-</table>
+<tpl if="isSimpleMode">
+	<div style="font-size:14px;">內容：</div>
+	<tpl if="crate.item != null">
+		<pre style='margin:3px 3px 3px 20px;white-space:pre-wrap;'>{crate.item}</pre>
+	</tpl>
+	<br />
+	<div style="font-size:14px;">備註：</div>
+	<tpl if="crate.note != null">
+		<pre style='margin:3px 3px 3px 20px;white-space:pre-wrap;'>{crate.note}</pre>
+	</tpl>
+</tpl>
+
+<tpl if="!isSimpleMode">
+	<table style="width:100%;margin:5px 0 5px 5px">
+		<tr>
+			<th style="width:50%;font-size:14px;">內容：</th>
+			<th style="width:50%;font-size:14px;">備註：</th>
+		</tr>
+		<tr>
+			<td style="vertical-align:top;">
+				<tpl if="crate.item != null">
+					<pre style='margin:3px 3px 3px 20px;white-space:pre-wrap;'>{crate.item}</pre>
+				</tpl>
+			</td>
+			<td style="vertical-align:top;">
+				<tpl if="crate.note != null">
+					<pre style='margin:3px 3px 3px 20px;white-space:pre-wrap;'>{crate.note}</pre>
+				</tpl>
+			</td>
+		</tr>
+	</table>
+</tpl>
