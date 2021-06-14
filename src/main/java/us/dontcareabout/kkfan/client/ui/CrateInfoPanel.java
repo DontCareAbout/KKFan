@@ -57,7 +57,7 @@ public class CrateInfoPanel extends Composite {
 	@Override
 	protected void onUnload() {
 		super.onUnload();
-		UiCenter.crateInfoClose();
+		UiCenter.floorPlanFocus();
 	}
 
 	public void refresh(Crate crate) {

@@ -4,8 +4,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 
 import us.dontcareabout.kkfan.client.component.gf.RwdRootPanel;
-import us.dontcareabout.kkfan.client.ui.event.CrateInfoCloseEvent;
-import us.dontcareabout.kkfan.client.ui.event.CrateInfoCloseEvent.CrateInfoCloseHandler;
+import us.dontcareabout.kkfan.client.ui.event.FloorPlanFocusEvent;
+import us.dontcareabout.kkfan.client.ui.event.FloorPlanFocusEvent.FloorPlanFocusHandler;
 
 public class UiCenter {
 	private final static SimpleEventBus eventBus = new SimpleEventBus();
@@ -17,11 +17,12 @@ public class UiCenter {
 	}
 
 	////////////////
-	public static void crateInfoClose() {
-		eventBus.fireEvent(new CrateInfoCloseEvent());
+
+	public static void floorPlanFocus() {
+		eventBus.fireEvent(new FloorPlanFocusEvent());
 	}
 
-	public static HandlerRegistration addCrateInfoClose(CrateInfoCloseHandler handler) {
-		return eventBus.addHandler(CrateInfoCloseEvent.TYPE, handler);
+	public static HandlerRegistration addFloorPlanFocus(FloorPlanFocusHandler handler) {
+		return eventBus.addHandler(FloorPlanFocusEvent.TYPE, handler);
 	}
 }
