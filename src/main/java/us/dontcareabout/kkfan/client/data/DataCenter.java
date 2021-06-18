@@ -24,6 +24,7 @@ public class DataCenter {
 		MapperRoom.join("crate", GWT.create(CrateMapper.class), GWT.create(CrateListMapper.class));
 		crateRester = new Rester<>("crate");
 		Logistics.join(new CrateSupplier());
+		Logistics.join(new LocationCrateSupplier());
 	}
 
 	public static Rester<Location, Long> locationRester;
