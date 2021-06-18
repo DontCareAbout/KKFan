@@ -97,22 +97,14 @@ public class FloorPlan extends LayerContainer {
 			})
 		);
 		hrGroup.add(
-			Logistics.addHandler("crate", new LogisticsHandler() {
+			Logistics.addHandler("locationCrate", new LogisticsHandler() {
 				@Override
 				public void onReady(LogisticsEvent event) {
 					refresh();
 				}
 			})
 		);
-		hrGroup.add(
-			Logistics.addHandler("location", new LogisticsHandler() {
-				@Override
-				public void onReady(LogisticsEvent event) {
-					Logistics.want("crate");
-				}
-			})
-		);
-		Logistics.want("location");
+		Logistics.want("locationCrate");
 		getElement().focus();
 	}
 
@@ -125,6 +117,8 @@ public class FloorPlan extends LayerContainer {
 	private void refresh() {
 		infoLayer.setFloor(floor);
 
+		HashMap<Location, List<Crate>> locateCrate = Logistics.getData("locationCrate");
+
 		//==== 處理 location ====//
 		for (LocationLayer locLayer : locLayerList) {
 			locLayer.undeploy();
@@ -132,13 +126,12 @@ public class FloorPlan extends LayerContainer {
 
 		locLayerList.clear();
 
-		List<Location> locations = Logistics.getData("location");
-		for (Location location : locations) {
-			if (floor.equals(location.getFloor())) {
-				LocationLayer locLayer = new LocationLayer(location);
-				locLayerList.add(locLayer);
-				addLayer(locLayer);
-			}
+		for (Location location : locateCrate.keySet()) {
+			if (!floor.equals(location.getFloor())) { continue; }
+
+			LocationLayer locLayer = new LocationLayer(location);
+			locLayerList.add(locLayer);
+			addLayer(locLayer);
 		}
 
 		preRatio = 1;
@@ -154,27 +147,8 @@ public class FloorPlan extends LayerContainer {
 		//========//
 
 		//==== 處理 crate ====//
-		List<Crate> crates = Logistics.getData("crate");
-		HashMap<LocationLayer, List<Crate>> locateCrate = new HashMap<>();
-
-		for (Crate crate : crates) {
-			for (LocationLayer locLayer : locLayerList) {
-				if (!crate.getLocation().equals(locLayer.location)) { continue; }
-
-				List<Crate> list = locateCrate.get(locLayer);
-
-				if (list == null) {
-					list = new ArrayList<>();
-					locateCrate.put(locLayer, list);
-				}
-
-				list.add(crate);
-				break;
-			}
-		}
-
-		for (LocationLayer locLayer : locateCrate.keySet()) {
-			locLayer.takeOver(locateCrate.get(locLayer));
+		for (LocationLayer locLayer : locLayerList) {
+			locLayer.takeOver(locateCrate.get(locLayer.location));
 		}
 		//========//
 
