@@ -29,7 +29,7 @@ public class Logistics {
 		return (D)find(name).getData();
 	}
 
-	public static <H extends LogisticsHandler> HandlerRegistration addHandler(String name, H handler) {
+	public static HandlerRegistration addHandler(String name, LogisticsHandler handler) {
 		return find(name).addHandler(handler);
 	}
 
