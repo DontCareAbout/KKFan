@@ -9,6 +9,7 @@ public enum LocationType {
 	;
 
 	public static boolean isMapType(LocationType type) {
-		return type != trip && type != unborn;
+		//somewhere 目前也沒辦法畫在地圖上，所以改成正面表列... Orz
+		return type == storage || type == gallery;
 	}
 }
