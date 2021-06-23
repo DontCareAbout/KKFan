@@ -290,7 +290,7 @@ public class LocationLayer extends LayerSprite {
 		@Override
 		protected void onUnload() {
 			super.onUnload();
-			UiCenter.floorPlanFocus();	//Refactory
+			UiCenter.floorPlanFocus();
 		}
 
 		void refresh(List<Crate> list) {

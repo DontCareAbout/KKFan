@@ -95,6 +95,7 @@ public class NonMapLocationPanel extends AccordionLayoutContainer {
 			setHeading(StringUtil.toString(type));
 
 			main.setScrollMode(ScrollMode.AUTOY);
+			main.setAdjustForScroll(true);
 			add(main);
 		}
 
