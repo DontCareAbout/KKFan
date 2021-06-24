@@ -6,6 +6,9 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import us.dontcareabout.kkfan.client.component.gf.RwdRootPanel;
 import us.dontcareabout.kkfan.client.ui.event.FloorPlanFocusEvent;
 import us.dontcareabout.kkfan.client.ui.event.FloorPlanFocusEvent.FloorPlanFocusHandler;
+import us.dontcareabout.kkfan.client.ui.event.SelectLocationEvent;
+import us.dontcareabout.kkfan.client.ui.event.SelectLocationEvent.SelectLocationHandler;
+import us.dontcareabout.kkfan.shared.vo.Location;
 
 public class UiCenter {
 	private final static SimpleEventBus eventBus = new SimpleEventBus();
@@ -24,5 +27,13 @@ public class UiCenter {
 
 	public static HandlerRegistration addFloorPlanFocus(FloorPlanFocusHandler handler) {
 		return eventBus.addHandler(FloorPlanFocusEvent.TYPE, handler);
+	}
+
+	public static void selectLocation(Location location) {
+		eventBus.fireEvent(new SelectLocationEvent(location));
+	}
+
+	public static HandlerRegistration addSelectNonMapLocation(SelectLocationHandler handler) {
+		return eventBus.addHandler(SelectLocationEvent.TYPE, handler);
 	}
 }
