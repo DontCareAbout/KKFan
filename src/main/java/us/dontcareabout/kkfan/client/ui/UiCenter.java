@@ -8,6 +8,8 @@ import us.dontcareabout.kkfan.client.ui.event.FloorPlanFocusEvent;
 import us.dontcareabout.kkfan.client.ui.event.FloorPlanFocusEvent.FloorPlanFocusHandler;
 import us.dontcareabout.kkfan.client.ui.event.SelectLocationEvent;
 import us.dontcareabout.kkfan.client.ui.event.SelectLocationEvent.SelectLocationHandler;
+import us.dontcareabout.kkfan.client.util.StringUtil;
+import us.dontcareabout.kkfan.shared.vo.Crate;
 import us.dontcareabout.kkfan.shared.vo.Location;
 
 public class UiCenter {
@@ -20,6 +22,13 @@ public class UiCenter {
 	}
 
 	////////////////
+
+	private static final CrateInfoPanel crateInfo = new CrateInfoPanel();
+
+	public static void showCrateInfo(Crate crate) {
+		crateInfo.refresh(crate);
+		RwdRootPanel.dialog(crateInfo, CrateInfoPanel.W, CrateInfoPanel.H, StringUtil.serial(crate));
+	}
 
 	public static void floorPlanFocus() {
 		eventBus.fireEvent(new FloorPlanFocusEvent());
