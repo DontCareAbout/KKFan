@@ -12,10 +12,13 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.AccordionLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 import us.dontcareabout.kkfan.client.data.gf.Logistics;
 import us.dontcareabout.kkfan.client.data.gf.LogisticsEvent;
 import us.dontcareabout.kkfan.client.data.gf.LogisticsHandler;
+import us.dontcareabout.kkfan.client.ui.UiCenter;
 import us.dontcareabout.kkfan.client.util.StringUtil;
 import us.dontcareabout.kkfan.shared.vo.Crate;
 import us.dontcareabout.kkfan.shared.vo.Location;
@@ -121,6 +124,12 @@ public class NonMapLocationPanel extends AccordionLayoutContainer {
 			this.location = location;
 			this.list = list;
 			setText(location.getName() + (list.size() == 0 ? "" : " [+" + list.size() + "]"));
+			addSelectHandler(new SelectHandler() {
+				@Override
+				public void onSelect(SelectEvent event) {
+					UiCenter.selectLocation(location);
+				}
+			});
 		}
 	}
 }
