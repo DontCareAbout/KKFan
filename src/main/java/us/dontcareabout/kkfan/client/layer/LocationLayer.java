@@ -103,6 +103,7 @@ public class LocationLayer extends LayerSprite {
 		}
 		redeploy();
 		lineUp();
+		adjustMember();
 	}
 
 	@Override
