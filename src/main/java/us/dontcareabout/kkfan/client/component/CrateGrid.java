@@ -54,6 +54,8 @@ public class CrateGrid extends Grid2<Crate> {
 	}
 
 	public void refresh(List<Crate> data) {
+		if (data.size() == 0) { mask("沒有箱子"); }
+
 		getStore().replaceAll(data);
 	}
 
