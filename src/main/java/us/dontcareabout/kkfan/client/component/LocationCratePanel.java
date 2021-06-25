@@ -14,6 +14,7 @@ import us.dontcareabout.kkfan.client.data.gf.LogisticsHandler;
 import us.dontcareabout.kkfan.client.ui.UiCenter;
 import us.dontcareabout.kkfan.client.ui.event.SelectLocationEvent;
 import us.dontcareabout.kkfan.client.ui.event.SelectLocationEvent.SelectLocationHandler;
+import us.dontcareabout.kkfan.client.util.StringUtil;
 import us.dontcareabout.kkfan.shared.vo.Crate;
 import us.dontcareabout.kkfan.shared.vo.Location;
 
@@ -37,7 +38,10 @@ public class LocationCratePanel extends ContentPanel {
 			@Override
 			public void onSelectLocation(SelectLocationEvent event) {
 				location = event.location;
-				setHeading(location.getName());
+				setHeading(
+					"[" + StringUtil.toString(location.getType()) + "] " +
+					location.getName()
+				);
 				refresh();
 			}
 		});
